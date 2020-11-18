@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id "androidx.navigation.safeargs.kotlin"
     id 'dagger.hilt.android.plugin'
+
 }
 
 android {
@@ -82,7 +83,7 @@ dependencies {
 
     // Google Maps Location Services
     implementation 'com.google.android.gms:play-services-location:17.1.0'
-    compile 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
 
 
 
