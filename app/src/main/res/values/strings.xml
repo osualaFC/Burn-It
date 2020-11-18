@@ -21,4 +21,5 @@
     <string name="string_continue">Continue</string>
     <string name="kg">kg</string>
     <string name="welcome_nplease_enter_your_name_and_weight">Welcome! \nPlease enter your name and weight.</string>
+    <string name="rationale">"You need to accept location permissions to use this app."</string>
 </resources>

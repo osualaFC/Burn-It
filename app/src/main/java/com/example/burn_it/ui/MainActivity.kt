@@ -4,10 +4,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.burn_it.R
 import com.example.burn_it.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
@@ -18,7 +22,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
-        val controller = binding.navHostFragment.findNavController()
+        val navHost = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
+        val controller = navHost.findNavController()
         val bottomNav =  binding.bottomNavigationView
 
        bottomNav.setupWithNavController(controller)

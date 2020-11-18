@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import com.example.burn_it.R
 import com.example.burn_it.databinding.FragmentRunBinding
 import com.example.burn_it.databinding.FragmentSettingsBinding
+import dagger.hilt.android.AndroidEntryPoint
+
 
 class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
