@@ -1,5 +1,6 @@
 package com.example.burn_it.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,7 +10,9 @@ import androidx.fragment.app.viewModels
 import com.example.burn_it.R
 import com.example.burn_it.databinding.FragmentRunBinding
 import com.example.burn_it.databinding.FragmentTrackingBinding
+import com.example.burn_it.services.TrackingService
 import com.example.burn_it.ui.viewModels.MainViewModel
+import com.example.burn_it.utils.Constants
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,7 +44,16 @@ class TrackingFragment : Fragment() {
         mapView.getMapAsync {
             map = it
         }
+        binding.btnToggleRun.setOnClickListener {
+            sendCommandToService(Constants.ACTION_START_OR_RESUME_SERVICE)
+        }
     }
+
+    private fun sendCommandToService(action: String) =
+        Intent(requireContext(), TrackingService::class.java).also {
+            it.action = action
+            requireContext().startService(it)
+        }
 
     override fun onResume() {
         super.onResume()
