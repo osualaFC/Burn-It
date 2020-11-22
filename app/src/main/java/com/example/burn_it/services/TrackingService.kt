@@ -265,4 +265,6 @@ class TrackingService :LifecycleService() /**cos i need to observe from life dat
         stopForeground(true)
         stopSelf()
     }
+
+
 }
