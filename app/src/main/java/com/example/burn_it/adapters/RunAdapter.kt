@@ -16,7 +16,7 @@ import java.util.*
 
 class RunAdapter : RecyclerView.Adapter<RunAdapter.RunViewHolder>() {
 
-    inner class RunViewHolder(val binding : ItemRunBinding) : RecyclerView.ViewHolder(binding.root){
+    inner class RunViewHolder(private val binding : ItemRunBinding) : RecyclerView.ViewHolder(binding.root){
 
         fun bind(run: Run){
             binding.apply{
