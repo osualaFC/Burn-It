@@ -1,5 +1,7 @@
 package com.example.burn_it.db
 
+
+
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -12,4 +14,7 @@ import androidx.room.TypeConverters
 abstract class RunDatabase : RoomDatabase(){
 
     abstract fun getRunDao(): RunDAO
+
+
+
 }

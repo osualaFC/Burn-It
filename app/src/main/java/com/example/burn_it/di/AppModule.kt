@@ -3,6 +3,7 @@ package com.example.burn_it.di
 import android.content.Context
 import androidx.room.Room
 import com.example.burn_it.db.RunDatabase
+import com.example.burn_it.utils.Constants.RUNNING_DATABASE_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,7 +22,7 @@ object AppModule {
     ) = Room.databaseBuilder(
         app,
         RunDatabase::class.java,
-        "run_db"
+        RUNNING_DATABASE_NAME
     ).build()
 
     @Singleton
