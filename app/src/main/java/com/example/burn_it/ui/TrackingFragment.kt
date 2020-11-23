@@ -37,7 +37,6 @@ class TrackingFragment : Fragment() {
 
     private var _binding: FragmentTrackingBinding? = null
     private val binding get() = _binding!!
-   // private val viewModel : MainViewModel by viewModels()
     private val viewModel by viewModels<MainViewModel>()
     private var map: GoogleMap? = null
     private lateinit var mapView: MapView
