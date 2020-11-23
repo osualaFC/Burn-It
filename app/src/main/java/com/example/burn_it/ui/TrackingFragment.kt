@@ -29,6 +29,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import javax.inject.Inject
 import kotlin.math.round
 
 @AndroidEntryPoint
@@ -44,7 +45,9 @@ class TrackingFragment : Fragment() {
     private var pathPoints = mutableListOf<Polyline>()
     private var curTimeInMillis = 0L
     private var menu: Menu? = null
-    val weight = 80f
+
+    @set:Inject
+    var weight = 80f
 
 
     override fun onCreateView(
