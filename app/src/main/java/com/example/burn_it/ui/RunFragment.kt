@@ -8,8 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.burn_it.R
+import com.example.burn_it.adapters.RunAdapter
 import com.example.burn_it.databinding.FragmentRunBinding
 import com.example.burn_it.ui.viewModels.MainViewModel
 import com.example.burn_it.utils.TrackingUtility
@@ -24,6 +27,7 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private var _binding: FragmentRunBinding? = null
     private val binding get() = _binding!!
     val REQUEST_CODE_LOCATION_PERMISSION = 1
+    private lateinit var runAdapter: RunAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,6 +46,18 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         }
 
         requestPermissions()
+
+        setupRecyclerView()
+
+        viewModel.runsSortedByDate.observe(viewLifecycleOwner, Observer {
+            runAdapter.submitList(it)
+        })
+    }
+
+    private fun setupRecyclerView() = binding.rvRuns.apply {
+        runAdapter = RunAdapter()
+        adapter = runAdapter
+        layoutManager = LinearLayoutManager(requireContext())
     }
 
     private fun requestPermissions() {
