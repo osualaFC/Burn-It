@@ -31,7 +31,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.round
-
+const val CANCEL_DIALOG = "Cancel"
 @AndroidEntryPoint
 class TrackingFragment : Fragment() {
 
@@ -79,6 +79,15 @@ class TrackingFragment : Fragment() {
         }
 
         subscribeToObservers()
+
+        /***call stop run on screen rotation**/
+        if(savedInstanceState != null){
+            val cancelDialog = parentFragmentManager.findFragmentByTag(CANCEL_DIALOG) as  CancelTrackingDialogFragment?
+            cancelDialog?.setYesListener {
+                stopRun()
+            }
+        }
+
     }
 
     private fun sendCommandToService(action: String) =
@@ -141,10 +150,10 @@ class TrackingFragment : Fragment() {
 
     private fun updateTracking(isTracking: Boolean) {
         this.isTracking = isTracking
-        if(!isTracking) {
+        if(!isTracking && curTimeInMillis > 0L) {
             binding.btnToggleRun.setText(R.string.start)
             binding.btnFinishRun.visibility = View.VISIBLE
-        } else {
+        } else if(isTracking){
             binding.btnToggleRun.setText(R.string.stop)
             menu?.getItem(0)?.isVisible = true
             binding.btnFinishRun.visibility = View.GONE
@@ -221,21 +230,15 @@ class TrackingFragment : Fragment() {
     }
 
     private fun showCancelTrackingDialog() {
-        val dialog = MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
-            .setTitle("Cancel the Run?")
-            .setMessage("Are you sure to cancel the current run and delete all its data?")
-            .setIcon(R.drawable.ic_delete)
-            .setPositiveButton("Yes") { _, _ ->
+        CancelTrackingDialogFragment().apply{
+            setYesListener {
                 stopRun()
             }
-            .setNegativeButton("No") { dialogInterface, _ ->
-                dialogInterface.cancel()
-            }
-            .create()
-        dialog.show()
+        }.show(parentFragmentManager, CANCEL_DIALOG)
     }
 
     private fun stopRun() {
+        binding.tvTimer.setText(R.string.timer)
         sendCommandToService(ACTION_STOP_SERVICE)
         findNavController().navigate(R.id.action_trackingFragment_to_runFragment)
     }

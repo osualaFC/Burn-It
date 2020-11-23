@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         navigateToTrackingFragmentIfNeeded(intent)
 
        bottomNav.setupWithNavController(controller)
+        bottomNav.setOnNavigationItemReselectedListener { /*NO-OP*/ }
 
        controller.addOnDestinationChangedListener { _, destination, _ ->
                 when(destination.id) {
