@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/primaryDark"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp"
     tools:context=".ui.StatisticsFragment">
@@ -12,48 +13,111 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Total Distance"
-        app:layout_constraintBottom_toTopOf="@+id/tvAverageSpeedInfo"
+        android:layout_marginTop="50dp"
+        app:layout_constraintBottom_toBottomOf="@+id/distancePBar"
         app:layout_constraintEnd_toEndOf="@+id/tvTotalDistance"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/tvTotalDistance"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.jackandphantom.circularprogressbar.CircleProgressbar
+        android:id="@+id/timePBar"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:cpb_progress="50"
+        app:cpb_roundedCorner="true"
+        app:cpb_foregroundProgressWidth="15"
+        app:cpb_foregroundProgressColor="@color/colorPrimary"
+        app:cpb_backgroundProgressColor="@color/primaryDark"
+        app:cpb_touchEnabled="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <com.jackandphantom.circularprogressbar.CircleProgressbar
+        android:id="@+id/distancePBar"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:cpb_progress="20"
+        app:cpb_roundedCorner="true"
+        app:cpb_foregroundProgressWidth="15"
+        app:cpb_foregroundProgressColor="@color/colorPrimary"
+        app:cpb_backgroundProgressColor="@color/primaryDark"
+        app:cpb_touchEnabled="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.jackandphantom.circularprogressbar.CircleProgressbar
+        android:id="@+id/caloriesPBar"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:cpb_progress="80"
+        app:cpb_roundedCorner="true"
+        app:cpb_foregroundProgressWidth="15"
+        app:cpb_foregroundProgressColor="@color/colorPrimary"
+        app:cpb_backgroundProgressColor="@color/primaryDark"
+        app:cpb_touchEnabled="true"
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toBottomOf="@id/timePBar"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <com.jackandphantom.circularprogressbar.CircleProgressbar
+        android:id="@+id/speedPBar"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:cpb_progress="40"
+        app:cpb_roundedCorner="true"
+        app:cpb_foregroundProgressWidth="15"
+        app:cpb_foregroundProgressColor="@color/colorPrimary"
+        app:cpb_backgroundProgressColor="@color/primaryDark"
+        app:cpb_touchEnabled="true"
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toBottomOf="@id/distancePBar"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tvTotalDistance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0km"
-        android:textSize="40sp"
+        android:textSize="16sp"
+        android:layout_marginStart="35dp"
+        android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toTopOf="@+id/tvTotalDistanceInfo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline2" />
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tvTotalTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00:00:00"
+        android:textSize="16sp"
+        android:layout_marginEnd="35dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/tvTotalTimeInfo"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tvTotalTimeInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Total Time"
-        app:layout_constraintBottom_toTopOf="@+id/tvTotalCaloriesInfo"
+        android:layout_marginTop="50dp"
+        app:layout_constraintBottom_toBottomOf="@+id/timePBar"
         app:layout_constraintEnd_toEndOf="@+id/tvTotalTime"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/tvTotalTime"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tvTotalTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="00:00:00"
-        android:textSize="40sp"
-        app:layout_constraintBottom_toTopOf="@+id/tvTotalTimeInfo"
-        app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintStart_toStartOf="parent" />
+
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tvTotalCaloriesInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Total Calories Burned"
+        android:text="Calories Burned"
+        android:layout_marginTop="90dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="@+id/tvTotalCalories"
         app:layout_constraintHorizontal_bias="0.5"
@@ -65,7 +129,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0kcal"
-        android:textSize="40sp"
+        android:textSize="16sp"
+        android:layout_marginEnd="35dp"
+        android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toTopOf="@+id/tvTotalCaloriesInfo"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="parent" />
@@ -75,6 +141,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Average Speed"
+        android:layout_marginTop="90dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="@+id/tvAverageSpeed"
         app:layout_constraintHorizontal_bias="0.5"
@@ -86,7 +153,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0km/h"
-        android:textSize="40sp"
+        android:textSize="16sp"
+        android:layout_marginStart="35dp"
+        android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toTopOf="@+id/tvAverageSpeedInfo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline2" />
@@ -110,7 +179,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvAverageSpeedInfo" />
+        app:layout_constraintTop_toBottomOf="@+id/guideline" />
 
 
 

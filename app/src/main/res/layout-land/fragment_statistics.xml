@@ -5,13 +5,71 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp"
+    android:background="@color/primaryDark"
     tools:context=".ui.StatisticsFragment">
+
+    <com.jackandphantom.circularprogressbar.CircleProgressbar
+        android:id="@+id/timePBar"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        app:cpb_progress="50"
+        app:cpb_roundedCorner="true"
+        app:cpb_foregroundProgressWidth="15"
+        app:cpb_foregroundProgressColor="@color/colorPrimary"
+        app:cpb_backgroundProgressColor="@color/primaryDark"
+        app:cpb_touchEnabled="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <com.jackandphantom.circularprogressbar.CircleProgressbar
+        android:id="@+id/distancePBar"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        app:cpb_progress="20"
+        app:cpb_roundedCorner="true"
+        app:cpb_foregroundProgressWidth="15"
+        app:cpb_foregroundProgressColor="@color/colorPrimary"
+        app:cpb_backgroundProgressColor="@color/primaryDark"
+        app:cpb_touchEnabled="true"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline2"/>
+
+    <com.jackandphantom.circularprogressbar.CircleProgressbar
+        android:id="@+id/caloriesPBar"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        app:cpb_progress="80"
+        app:cpb_roundedCorner="true"
+        app:cpb_foregroundProgressWidth="15"
+        app:cpb_foregroundProgressColor="@color/colorPrimary"
+        app:cpb_backgroundProgressColor="@color/primaryDark"
+        app:cpb_touchEnabled="true"
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toBottomOf="@id/guideline"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <com.jackandphantom.circularprogressbar.CircleProgressbar
+        android:id="@+id/speedPBar"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        app:cpb_progress="40"
+        app:cpb_roundedCorner="true"
+        app:cpb_foregroundProgressWidth="15"
+        app:cpb_foregroundProgressColor="@color/colorPrimary"
+        app:cpb_backgroundProgressColor="@color/primaryDark"
+        app:cpb_touchEnabled="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintTop_toBottomOf="@id/guideline"
+        app:layout_constraintEnd_toStartOf="@id/guideline2"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tvTotalDistanceInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Total Distance"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="@+id/tvTotalDistance"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/tvTotalDistance"
@@ -22,10 +80,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0km"
-        android:textSize="30sp"
+        android:textSize="15sp"
+        android:layout_marginBottom="40dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintEnd_toEndOf="@+id/tvAverageSpeed"
-        app:layout_constraintStart_toStartOf="@+id/tvAverageSpeed"
+        app:layout_constraintEnd_toEndOf="@+id/distancePBar"
+        app:layout_constraintStart_toStartOf="@+id/distancePBar"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -33,6 +92,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Total Time"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="@+id/tvTotalTime"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/tvTotalTime"
@@ -43,9 +103,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="00:00:00"
-        android:textSize="30sp"
+        android:textSize="15sp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="30dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintEnd_toEndOf="@+id/tvTotalCalories"
+        app:layout_constraintEnd_toEndOf="@+id/timePBar"
         app:layout_constraintStart_toStartOf="@+id/tvTotalCalories"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -54,9 +116,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0kcal"
-        android:textSize="30sp"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvAverageSpeed"
+        app:layout_constraintEnd_toEndOf="@+id/caloriesPBar"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
@@ -65,7 +127,8 @@
         android:id="@+id/tvTotalCaloriesInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Total Calories Burned"
+        android:text="Calories Burned"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="@+id/tvTotalCalories"
         app:layout_constraintStart_toStartOf="@+id/tvTotalCalories"
         app:layout_constraintTop_toBottomOf="@+id/tvTotalCalories" />
@@ -75,6 +138,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Average Speed"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="@+id/tvAverageSpeed"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/tvAverageSpeed"
@@ -85,11 +149,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0km/h"
-        android:textSize="30sp"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/barChart"
+        app:layout_constraintEnd_toEndOf="@+id/speedPBar"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tvTotalCalories"
+        app:layout_constraintStart_toStartOf="@+id/speedPBar"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
 
     <androidx.constraintlayout.widget.Guideline

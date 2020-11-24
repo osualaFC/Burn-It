@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/primaryDark"
     tools:context=".ui.RunFragment">
 
     <Spinner
@@ -44,7 +45,7 @@
         android:layout_marginBottom="32dp"
         android:contentDescription="@string/todo"
         android:src="@drawable/ic_add_black"
-        app:backgroundTint="@color/colorAccent"
+        app:backgroundTint="@color/colorPrimary"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

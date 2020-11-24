@@ -6,11 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".ui.TrackingFragment">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clInnerLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/md_blue_800"
+        android:background="@color/primaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -21,7 +22,7 @@
             android:id="@+id/tvTimer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="00:00:00:00"
+            android:text="@string/timer"
             android:textSize="50sp"
             app:layout_constraintBottom_toTopOf="@+id/btnToggleRun"
             app:layout_constraintEnd_toEndOf="parent"
@@ -29,11 +30,68 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clWeatherInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alpha=".3"
+            app:layout_constraintBottom_toTopOf="@id/btnToggleRun"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTimer">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/today"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:text="@string/today"
+                android:textSize="38sp"
+                app:layout_constraintStart_toStartOf="@id/clWeatherInfo"
+                app:layout_constraintTop_toTopOf="@id/clWeatherInfo" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/degrees"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:text="@string/_10_8"
+                android:textSize="25sp"
+                app:layout_constraintBottom_toBottomOf="@id/today"
+                app:layout_constraintStart_toEndOf="@id/today" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/celsius"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@id/degrees"
+                app:layout_constraintStart_toStartOf="@id/degrees"
+                app:layout_constraintTop_toBottomOf="@id/degrees" />
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="40dp"
+                android:src="@drawable/cloudy"
+                app:layout_constraintBottom_toBottomOf="@id/degrees"
+                app:layout_constraintEnd_toEndOf="@id/clWeatherInfo"
+                app:layout_constraintTop_toTopOf="@id/clWeatherInfo"
+                app:tint="@color/colorWhite" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnToggleRun"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Start"
+            android:layout_marginTop="30dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:padding="30dp"
+            android:text="@string/start"
+            app:cornerRadius="150dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnFinishRun"
             app:layout_constraintHorizontal_bias="0.5"
@@ -44,7 +102,11 @@
             android:id="@+id/btnFinishRun"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Finish Run"
+            android:layout_marginTop="30dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:padding="30dp"
+            android:text="@string/finish_run"
+            app:cornerRadius="150dp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -59,7 +121,7 @@
         android:id="@+id/tvLetsGo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Let's go, USERNAME!"
+        android:text="@string/let_s_go_username"
         android:textAlignment="center"
         android:textSize="50sp"
         android:visibility="gone"

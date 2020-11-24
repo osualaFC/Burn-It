@@ -1,7 +1,9 @@
 package com.example.burn_it.ui
 
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -24,14 +26,17 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.round
 const val CANCEL_DIALOG = "Cancel"
+const val TAG = "Tracking Fragment"
 @AndroidEntryPoint
 class TrackingFragment : Fragment() {
 
@@ -44,6 +49,7 @@ class TrackingFragment : Fragment() {
     private var pathPoints = mutableListOf<Polyline>()
     private var curTimeInMillis = 0L
     private var menu: Menu? = null
+
 
     @set:Inject
     var weight = 80f
@@ -68,7 +74,10 @@ class TrackingFragment : Fragment() {
         mapView.getMapAsync {
             map = it
             addAllPolylines()
+            setMapStyle(it)
+            it.mapType = GoogleMap.MAP_TYPE_HYBRID
         }
+
         binding.btnToggleRun.setOnClickListener {
            toggleRun()
         }
@@ -88,6 +97,27 @@ class TrackingFragment : Fragment() {
             }
         }
 
+    }
+
+    /**map style func**/
+    private fun setMapStyle(map: GoogleMap) {
+        try {
+            // Customize the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            val success = map.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(
+                    requireContext(),
+                    R.raw.map_style
+                )
+            )
+
+            if (!success) {
+               Timber.e("Style parsing failed.")
+
+            }
+        } catch (e: Resources.NotFoundException) {
+            Timber.e(e, "Can't find style. Error: ")
+        }
     }
 
     private fun sendCommandToService(action: String) =

@@ -125,4 +125,7 @@ dependencies {
 
     implementation 'android.arch.lifecycle:extensions:1.1.1'
 
+    //Progress bar
+    compile 'com.jackandphantom.android:circularprogressbar:1.2.0'
+
 }
