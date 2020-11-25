@@ -46,4 +46,9 @@
             android:id="@+id/action_setupFragment_to_runFragment"
             app:destination="@id/runFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/targetFragment"
+        android:name="com.example.burn_it.TargetFragment"
+        android:label="fragment_target"
+        tools:layout="@layout/fragment_target" />
 </navigation>

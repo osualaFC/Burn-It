@@ -43,8 +43,12 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.fab.setOnClickListener {
-            findNavController().navigate(R.id.action_runFragment_to_trackingFragment)
+        binding.fabRun.setOnClickListener {
+            findNavController().navigate(R.id.trackingFragment)
+        }
+
+        binding.fabTarget.setOnClickListener {
+            findNavController().navigate(R.id.targetFragment)
         }
 
         requestPermissions()

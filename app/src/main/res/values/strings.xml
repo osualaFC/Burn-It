@@ -29,4 +29,14 @@
     <string name="_10_8">10.8</string>
     <string name="celsius">celsius</string>
     <string name="cloudy">Cloudy</string>
+    <string name="put_your_self_to_the_test">PUT YOUR SELF TO THE TEST</string>
+    <string name="today_s_target">Today\'s Target</string>
+    <string name="_1000">1000</string>
+    <string name="km">km</string>
+    <string name="set_target">Set Target</string>
+    <string name="_10"> e.g 10</string>
+    <string name="_2"> e.g 2</string>
+    <string name="this_week_target">This Week Target</string>
+    <string name="this_month_target">This Month Target</string>
+    <string name="_40"> e.g 40</string>
 </resources>
