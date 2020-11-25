@@ -75,7 +75,7 @@ class TrackingFragment : Fragment() {
             map = it
             addAllPolylines()
             setMapStyle(it)
-            it.mapType = GoogleMap.MAP_TYPE_HYBRID
+            //it.mapType = GoogleMap.MAP_TYPE_NORMAL
         }
 
         binding.btnToggleRun.setOnClickListener {
@@ -107,7 +107,7 @@ class TrackingFragment : Fragment() {
             val success = map.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
                     requireContext(),
-                    R.raw.map_style
+                    R.raw.map_dark_style
                 )
             )
 

@@ -4,7 +4,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import com.example.burn_it.repository.MainRepository
 
-class StatisticsViewModel @ViewModelInject constructor(val repository: MainRepository) :ViewModel(){
+class StatisticsViewModel @ViewModelInject constructor(private val repository: MainRepository) :ViewModel(){
 
     val totalTimeRun = repository.getTotalTimeInMillis()
     val totalDistance = repository.getTotalDistance()

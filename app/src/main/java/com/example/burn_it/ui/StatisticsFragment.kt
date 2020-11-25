@@ -60,17 +60,17 @@ class StatisticsFragment : Fragment() {
             setDrawLabels(false)
             axisLineColor = Color.WHITE
             textColor = Color.WHITE
-            setDrawGridLines(false)
+            setDrawGridLines(true)
         }
         barChart.axisLeft.apply {
             axisLineColor = Color.WHITE
             textColor = Color.WHITE
-            setDrawGridLines(false)
+            setDrawGridLines(true)
         }
         barChart.axisRight.apply {
             axisLineColor = Color.WHITE
             textColor = Color.WHITE
-            setDrawGridLines(false)
+            setDrawGridLines(true)
         }
         barChart.apply {
             description.text = "Avg Speed Over Time"
