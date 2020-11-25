@@ -23,4 +23,6 @@ object Constants {
     const val KEY_FIRST_TIME_TOGGLE = "KEY_FIRST_TIME_TOGGLE"
     const val KEY_NAME = "KEY_NAME"
     const val KEY_WEIGHT = "KEY_WEIGHT"
+    const val API_KEY = "3b8def3e2c5f6e5a0596249d31f820ce"
+    const val BASE_URL = "http://api.openweathermap.org/data/2.5/"
 }

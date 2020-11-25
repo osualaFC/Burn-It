@@ -28,4 +28,5 @@
     <string name="today">Today:</string>
     <string name="_10_8">10.8</string>
     <string name="celsius">celsius</string>
+    <string name="cloudy">Cloudy</string>
 </resources>

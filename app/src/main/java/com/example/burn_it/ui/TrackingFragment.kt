@@ -1,10 +1,13 @@
 package com.example.burn_it.ui
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.*
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -22,19 +25,21 @@ import com.example.burn_it.utils.Constants.MAP_ZOOM
 import com.example.burn_it.utils.Constants.POLYLINE_COLOR
 import com.example.burn_it.utils.Constants.POLYLINE_WIDTH
 import com.example.burn_it.utils.TrackingUtility
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.PolylineOptions
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.round
+
 const val CANCEL_DIALOG = "Cancel"
 const val TAG = "Tracking Fragment"
 @AndroidEntryPoint
@@ -49,6 +54,12 @@ class TrackingFragment : Fragment() {
     private var pathPoints = mutableListOf<Polyline>()
     private var curTimeInMillis = 0L
     private var menu: Menu? = null
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
+    private var currentLocation: Location? = null
+    private var latitude: Double = 0.0
+    private var longitude: Double = 0.0
 
 
     @set:Inject
@@ -70,6 +81,8 @@ class TrackingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         mapView.onCreate(savedInstanceState)
 
+        fusedLocationClient =
+            LocationServices.getFusedLocationProviderClient(requireActivity())
 
         mapView.getMapAsync {
             map = it
@@ -79,7 +92,7 @@ class TrackingFragment : Fragment() {
         }
 
         binding.btnToggleRun.setOnClickListener {
-           toggleRun()
+            toggleRun()
         }
 
         binding.btnFinishRun.setOnClickListener {
@@ -87,15 +100,21 @@ class TrackingFragment : Fragment() {
             endRunAndSaveToDb()
         }
 
+
         subscribeToObservers()
+        getLocation()
+        startLocation()
+
 
         /***call stop run on screen rotation**/
-        if(savedInstanceState != null){
-            val cancelDialog = parentFragmentManager.findFragmentByTag(CANCEL_DIALOG) as  CancelTrackingDialogFragment?
+        if (savedInstanceState != null) {
+            val cancelDialog =
+                parentFragmentManager.findFragmentByTag(CANCEL_DIALOG) as CancelTrackingDialogFragment?
             cancelDialog?.setYesListener {
                 stopRun()
             }
         }
+
 
     }
 
@@ -144,8 +163,77 @@ class TrackingFragment : Fragment() {
         })
     }
 
+    private fun getLocation() {
+
+        if (TrackingUtility.hasLocationPermissions(requireContext())) {
+
+            locationRequest = LocationRequest().apply {
+                interval = TimeUnit.SECONDS.toMillis(1000)
+                fastestInterval = TimeUnit.SECONDS.toMillis(2000)
+                maxWaitTime = TimeUnit.MINUTES.toMillis(1)
+                priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            }
+
+            locationCallback = object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult?) {
+                    super.onLocationResult(locationResult)
+
+                    if (locationResult?.lastLocation != null) {
+                        val lat = locationResult.lastLocation.latitude
+                        val long = locationResult.lastLocation.longitude
+
+                        viewModel.getWeatherInfo(lat, long)
+
+                        viewModel.weatherData.observe(viewLifecycleOwner, Observer {
+
+                            Timber.d("${it.main}")
+
+
+                            val list = it.weather
+                            for (info in list) {
+                                binding.weatherType.text = info.description
+                            }
+                            binding.degrees.text = (round(it.main.temp - 273.15)).toString()
+                            binding.today.text = it.name
+
+                        })
+                    } else {
+                        Timber.d("Location missing in callback.")
+                    }
+
+
+                }
+            }
+
+
+        }
+    }
+
+    private fun startLocation() {
+        if (TrackingUtility.hasLocationPermissions(requireContext())) {
+            if (ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+
+                return
+            }
+            fusedLocationClient.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                null
+                /***current thread will be use for the callBack**/
+            )
+        }
+    }
+
+
     private fun addAllPolylines() {
-        for(polyline in pathPoints) {
+        for (polyline in pathPoints) {
             val polylineOptions = PolylineOptions()
                 .color(POLYLINE_COLOR)
                 .width(POLYLINE_WIDTH)
@@ -168,7 +256,7 @@ class TrackingFragment : Fragment() {
     }
 
     private fun moveCameraToUser() {
-        if(pathPoints.isNotEmpty() && pathPoints.last().isNotEmpty()) {
+        if (pathPoints.isNotEmpty() && pathPoints.last().isNotEmpty()) {
             map?.animateCamera(
                 CameraUpdateFactory.newLatLngZoom(
                     pathPoints.last().last(),
@@ -178,12 +266,13 @@ class TrackingFragment : Fragment() {
         }
     }
 
+
     private fun updateTracking(isTracking: Boolean) {
         this.isTracking = isTracking
-        if(!isTracking && curTimeInMillis > 0L) {
+        if (!isTracking && curTimeInMillis > 0L) {
             binding.btnToggleRun.setText(R.string.start)
             binding.btnFinishRun.visibility = View.VISIBLE
-        } else if(isTracking){
+        } else if (isTracking) {
             binding.btnToggleRun.setText(R.string.stop)
             menu?.getItem(0)?.isVisible = true
             binding.btnFinishRun.visibility = View.GONE

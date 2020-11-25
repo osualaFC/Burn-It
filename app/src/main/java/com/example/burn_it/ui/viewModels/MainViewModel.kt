@@ -1,21 +1,42 @@
 package com.example.burn_it.ui.viewModels
 
 
+import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.burn_it.db.Run
+import com.example.burn_it.db.Weather
 import com.example.burn_it.repository.MainRepository
 import com.example.burn_it.utils.SortType
 import kotlinx.coroutines.launch
+import retrofit2.Response
+import timber.log.Timber
+import java.io.IOException
 
 
 class MainViewModel @ViewModelInject constructor(private val repository: MainRepository) : ViewModel() {
 
+    private var _weatherData = MutableLiveData<Weather>()
+    val weatherData: LiveData<Weather>
+        get() = _weatherData
+
     fun insertRun(run: Run) = viewModelScope.launch{
         repository.insertRun(run)
     }
+
+  fun getWeatherInfo(lat: Double, lon:Double){
+      viewModelScope.launch {
+          try{
+              if(repository.todayWeather(lat, lon).isSuccessful){
+                  _weatherData.value = repository.todayWeather(lat, lon).body()
+              }
+          }
+          catch (e: IOException){
+              Timber.i("response")
+          }
+
+      }
+  }
 
     private val runsSortedByDate = repository.getAllRunsSortedByDate()
     private val runsSortedByDistance = repository.getAllRunsSortedByDistance()
