@@ -86,3 +86,4 @@ class MainViewModel @ViewModelInject constructor(private val repository: MainRep
         this.sortType = sortType
     }
 }
+

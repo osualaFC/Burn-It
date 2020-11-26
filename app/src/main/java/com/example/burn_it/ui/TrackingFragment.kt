@@ -4,9 +4,12 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
-import android.location.Location
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Environment
+import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -35,6 +38,10 @@ import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -57,9 +64,7 @@ class TrackingFragment : Fragment() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
-    private var currentLocation: Location? = null
-    private var latitude: Double = 0.0
-    private var longitude: Double = 0.0
+
 
 
     @set:Inject
@@ -87,7 +92,7 @@ class TrackingFragment : Fragment() {
         mapView.getMapAsync {
             map = it
             addAllPolylines()
-            setMapStyle(it)
+            //setMapStyle(it)
             //it.mapType = GoogleMap.MAP_TYPE_NORMAL
         }
 
@@ -121,8 +126,6 @@ class TrackingFragment : Fragment() {
     /**map style func**/
     private fun setMapStyle(map: GoogleMap) {
         try {
-            // Customize the styling of the base map using a JSON object defined
-            // in a raw resource file.
             val success = map.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
                     requireContext(),
@@ -306,6 +309,41 @@ class TrackingFragment : Fragment() {
         )
     }
 
+    /***
+     * FOR WEEKLY TARGET
+     * 1. convert target time to millisec
+     * 2. compare with the total time ran
+     *      1. if they are equal--mission complete...
+     *
+     * **/
+    private fun saveImageOnInternalStorage(bmp : Bitmap): String{
+        var outputStream:FileOutputStream? = null
+        val filePath = Environment.getExternalStorageDirectory().toString()
+        val dir = File("$filePath/BurnIt/")
+        dir.mkdirs()
+        val child = System.currentTimeMillis().toString() + ".jpg"
+        val file = File(dir, child)
+        try {
+            outputStream = FileOutputStream(file)
+        }catch (e: FileNotFoundException){
+            e.printStackTrace()
+        }
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        Toast.makeText(requireContext(), "saved to internal storage", Toast.LENGTH_SHORT).show()
+
+        try {
+            outputStream?.flush()
+        }catch (e: IOException){
+            e.printStackTrace()
+        }
+        try {
+            outputStream?.close()
+        }catch (e: IOException){
+            e.printStackTrace()
+        }
+        Timber.d( "saveImageOnInternalStorage: $file")
+        return file.absolutePath
+    }
     private fun endRunAndSaveToDb() {
         map?.snapshot { bmp ->
             var distanceInMeters = 0
@@ -315,7 +353,8 @@ class TrackingFragment : Fragment() {
             val avgSpeed = round((distanceInMeters / 1000f) / (curTimeInMillis / 1000f / 60 / 60) * 10) / 10f/**in km/hr round-off to 1dp**/
             val dateTimestamp = Calendar.getInstance().timeInMillis
             val caloriesBurned = ((distanceInMeters / 1000f) * weight).toInt()
-            val run = Run(bmp, dateTimestamp, avgSpeed, distanceInMeters, curTimeInMillis, caloriesBurned)
+            val imagePath = saveImageOnInternalStorage(bmp)
+            val run = Run(imagePath, dateTimestamp, avgSpeed, distanceInMeters, curTimeInMillis, caloriesBurned)
             viewModel.insertRun(run)
             Snackbar.make(
                 requireActivity().findViewById(R.id.rootView),

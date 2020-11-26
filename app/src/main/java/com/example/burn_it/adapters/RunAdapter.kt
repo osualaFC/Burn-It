@@ -1,5 +1,6 @@
 package com.example.burn_it.adapters
 
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +21,10 @@ class RunAdapter : RecyclerView.Adapter<RunAdapter.RunViewHolder>() {
 
         fun bind(run: Run){
             binding.apply{
-                Glide.with(this.ivRunImage).load(run.img).into(ivRunImage)
+                if(run.img.isNotEmpty()){
+                    ivRunImage.setImageBitmap(BitmapFactory.decodeFile(run.img))
+                }
+              //  Glide.with(this.ivRunImage).load(run.img).into(ivRunImage)
 
                 val calendar = Calendar.getInstance().apply {
                     timeInMillis = run.timestamp

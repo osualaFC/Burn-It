@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "running_table")
 data class Run(
-    var img: Bitmap? = null,
+    var img: String = "",
     var timestamp: Long = 0L,
     var avgSpeedInKMH: Float = 0f,
     var distanceInMeters: Int = 0,
