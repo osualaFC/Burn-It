@@ -27,6 +27,10 @@ class MainViewModel @ViewModelInject constructor(private val repository: MainRep
         repository.insertRun(run)
     }
 
+    fun deleteRun(run: Run) = viewModelScope.launch {
+        repository.deleteRun(run)
+    }
+
   fun getWeatherInfo(lat: Double, lon:Double, view1: TextView, view2: ImageView){
       viewModelScope.launch {
           try{

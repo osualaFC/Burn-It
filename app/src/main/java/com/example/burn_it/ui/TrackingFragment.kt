@@ -3,7 +3,6 @@ package com.example.burn_it.ui
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Environment
@@ -18,6 +17,7 @@ import com.example.burn_it.databinding.FragmentTrackingBinding
 import com.example.burn_it.db.Run
 import com.example.burn_it.services.Polyline
 import com.example.burn_it.services.TrackingService
+import com.example.burn_it.ui.dialog.CancelDataDialog
 import com.example.burn_it.ui.viewModels.MainViewModel
 import com.example.burn_it.utils.Constants.ACTION_PAUSE_SERVICE
 import com.example.burn_it.utils.Constants.ACTION_START_OR_RESUME_SERVICE
@@ -31,7 +31,6 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -119,7 +118,7 @@ class TrackingFragment : Fragment() {
         /***call stop run on screen rotation**/
         if (savedInstanceState != null) {
             val cancelDialog =
-                parentFragmentManager.findFragmentByTag(CANCEL_DIALOG) as CancelTrackingDialogFragment?
+                parentFragmentManager.findFragmentByTag(CANCEL_DIALOG) as CancelDataDialog?
             cancelDialog?.setYesListener {
                 stopRun()
             }
@@ -128,24 +127,24 @@ class TrackingFragment : Fragment() {
 
     }
 
-    /**map style func**/
-    private fun setMapStyle(map: GoogleMap) {
-        try {
-            val success = map.setMapStyle(
-                MapStyleOptions.loadRawResourceStyle(
-                    requireContext(),
-                    R.raw.map_dark_style
-                )
-            )
-
-            if (!success) {
-               Timber.e("Style parsing failed.")
-
-            }
-        } catch (e: Resources.NotFoundException) {
-            Timber.e(e, "Can't find style. Error: ")
-        }
-    }
+//    /**map style func**/
+//    private fun setMapStyle(map: GoogleMap) {
+//        try {
+//            val success = map.setMapStyle(
+//                MapStyleOptions.loadRawResourceStyle(
+//                    requireContext(),
+//                    R.raw.map_dark_style
+//                )
+//            )
+//
+//            if (!success) {
+//               Timber.e("Style parsing failed.")
+//
+//            }
+//        } catch (e: Resources.NotFoundException) {
+//            Timber.e(e, "Can't find style. Error: ")
+//        }
+//    }
 
     private fun sendCommandToService(action: String) =
         Intent(requireContext(), TrackingService::class.java).also {
@@ -387,7 +386,7 @@ class TrackingFragment : Fragment() {
     }
 
     private fun showCancelTrackingDialog() {
-        CancelTrackingDialogFragment().apply{
+        CancelDataDialog(R.string.cancel_mesage_track, R.string.cancel_title_track).apply{
             setYesListener {
                 stopRun()
             }

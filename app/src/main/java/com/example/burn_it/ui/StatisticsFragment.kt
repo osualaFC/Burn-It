@@ -2,17 +2,14 @@ package com.example.burn_it.ui
 
 import android.graphics.Color
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.example.burn_it.R
-import com.example.burn_it.databinding.FragmentRunBinding
 import com.example.burn_it.databinding.FragmentStatisticsBinding
-import com.example.burn_it.ui.viewModels.MainViewModel
+import com.example.burn_it.ui.dialog.CancelDataDialog
 import com.example.burn_it.ui.viewModels.StatisticsViewModel
 import com.example.burn_it.utils.CustomMarkerView
 import com.example.burn_it.utils.TrackingUtility
@@ -24,6 +21,7 @@ import com.github.mikephil.charting.data.BarEntry
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.round
 
+const val CLEAR_DIALOG = "clear"
 @AndroidEntryPoint
 class StatisticsFragment : Fragment() {
 
@@ -37,7 +35,7 @@ class StatisticsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+        setHasOptionsMenu(true)
         _binding = FragmentStatisticsBinding.inflate(inflater, container, false)
 
          barChart = binding.barChart
@@ -51,6 +49,14 @@ class StatisticsFragment : Fragment() {
         subscribeToObservers()
 
         setupBarChart()
+
+        if (savedInstanceState != null) {
+            val cancelDialog =
+                parentFragmentManager.findFragmentByTag(CLEAR_DIALOG) as CancelDataDialog?
+            cancelDialog?.setYesListener {
+                viewModel.clearData()
+            }
+        }
     }
 
     private fun setupBarChart() {
@@ -83,7 +89,7 @@ class StatisticsFragment : Fragment() {
             it?.let {
                 val totalTimeRun = TrackingUtility.getFormattedStopWatchTime(it)
                 binding.tvTotalTime.text = totalTimeRun
-                binding.timePBar.maxProgress = 10000f
+                binding.timePBar.maxProgress = 10000000f
                 binding.timePBar.progress = it.toFloat()
             }
         })
@@ -102,7 +108,7 @@ class StatisticsFragment : Fragment() {
                 val avgSpeed = round(it * 10f) / 10f
                 val avgSpeedString = "${avgSpeed}km/h"
                 binding.tvAverageSpeed.text = avgSpeedString
-                binding.speedPBar.maxProgress = 10f
+                binding.speedPBar.maxProgress = 100f
                 binding.speedPBar.progress = it
             }
         })
@@ -110,7 +116,7 @@ class StatisticsFragment : Fragment() {
             it?.let {
                 val totalCalories = "${it}kcal"
                 binding.tvTotalCalories.text = totalCalories
-                binding.timePBar.maxProgress = 10000f
+                binding.timePBar.maxProgress = 1000000f
                 binding.timePBar.progress = it.toFloat()
             }
         })
@@ -127,6 +133,27 @@ class StatisticsFragment : Fragment() {
                 barChart.invalidate()
             }
         })
+    }
+    private fun showClearDialog() {
+        CancelDataDialog(R.string.cancel_mesage_stat, R.string.cancel_title_stat).apply{
+            setYesListener {
+              viewModel.clearData()
+            }
+        }.show(parentFragmentManager, CLEAR_DIALOG)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.stats_menu, menu)
+
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.clearData -> {
+                showClearDialog()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 

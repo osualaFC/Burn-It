@@ -9,17 +9,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.TextView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.burn_it.R
 import com.example.burn_it.adapters.RunAdapter
 import com.example.burn_it.databinding.FragmentRunBinding
 import com.example.burn_it.ui.viewModels.MainViewModel
+import com.example.burn_it.ui.viewModels.StatisticsViewModel
 import com.example.burn_it.utils.SortType
 import com.example.burn_it.utils.TrackingUtility
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
@@ -28,7 +33,7 @@ import timber.log.Timber
 const val REQUEST_CODE_LOCATION_PERMISSION = 1
 @AndroidEntryPoint
 class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
-  private val viewModel : MainViewModel by viewModels()
+    private val viewModel by viewModels<MainViewModel>()
     private var _binding: FragmentRunBinding? = null
     private val binding get() = _binding!!
     private lateinit var runAdapter: RunAdapter
@@ -84,13 +89,44 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             runAdapter.submitList(it)
         })
 
+        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val run = runAdapter.differ.currentList[position]
+                viewModel.deleteRun(run)
+                Snackbar.make(view, "Successfully deleted run", Snackbar.LENGTH_LONG).apply {
+                    setAction("Undo") {
+                        viewModel.insertRun(run)
+                    }
+                    show()
+                }
+            }
+        }
+
+        ItemTouchHelper(itemTouchHelperCallback).apply {
+            attachToRecyclerView(binding.rvRuns)
+        }
+
+
         val bundle = RunFragmentArgs.fromBundle(requireArguments())
         runResult = bundle.percentage
         Timber.d("$runResult")
 
         displayedResult(runResult, binding.result)
-    }
 
+
+}
     private fun setupRecyclerView() = binding.rvRuns.apply {
         runAdapter = RunAdapter()
         adapter = runAdapter

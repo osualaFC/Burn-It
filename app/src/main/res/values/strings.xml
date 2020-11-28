@@ -45,4 +45,9 @@
     <string name="this_week_target">This Week Target</string>
     <string name="this_month_target">This Month Target</string>
     <string name="_40"> e.g 40</string>
+    <string name="clear_data">Clear Data</string>
+    <string name="cancel_mesage_stat">"Are you sure, You can't recover this data later"</string>
+    <string name="cancel_title_stat">"Clear All Data?"</string>
+    <string name="cancel_mesage_track">"Are you sure to cancel the current run and delete all its data?"</string>
+    <string name="cancel_title_track">"Cancel the Run?"</string>
 </resources>

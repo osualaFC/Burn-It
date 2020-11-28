@@ -1,13 +1,12 @@
-package com.example.burn_it.ui
+package com.example.burn_it.ui.dialog
 
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.example.burn_it.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class CancelTrackingDialogFragment : DialogFragment() {
+class CancelDataDialog(val message: Int, val title: Int) : DialogFragment() {
 
     private var yesListener : (() -> Unit)? = null
 
@@ -16,14 +15,14 @@ class CancelTrackingDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-         return MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
-            .setTitle("Cancel the Run?")
-            .setMessage("Are you sure to cancel the current run and delete all its data?")
+        return MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+            .setTitle(title)
+            .setMessage(message)
             .setIcon(R.drawable.ic_delete)
             .setPositiveButton("Yes") { _, _ ->
                 yesListener?.let{yes ->
                     yes()
-            }
+                }
             }
             .setNegativeButton("No") { dialogInterface, _ ->
                 dialogInterface.cancel()
