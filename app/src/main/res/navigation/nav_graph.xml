@@ -17,6 +17,11 @@
         <action
             android:id="@+id/action_runFragment_to_trackingFragment"
             app:destination="@id/trackingFragment" />
+        <argument
+            android:name="percentage"
+            app:argType="integer"
+            android:defaultValue="0" />
+
     </fragment>
     <fragment
         android:id="@+id/statisticsFragment"
@@ -31,6 +36,18 @@
         <action
             android:id="@+id/action_trackingFragment_to_runFragment"
             app:destination="@id/runFragment" />
+        <action
+            android:id="@+id/action_trackingFragment_to_targetFragment"
+            app:destination="@id/targetFragment" />
+        <argument
+            android:name="targetTime"
+            app:argType="long"
+            android:defaultValue="0L"/>
+        <argument
+            android:name="position"
+            app:argType="integer"
+            android:defaultValue="0" />
+
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -48,7 +65,7 @@
     </fragment>
     <fragment
         android:id="@+id/targetFragment"
-        android:name="com.example.burn_it.TargetFragment"
+        android:name="com.example.burn_it.ui.TargetFragment"
         android:label="fragment_target"
         tools:layout="@layout/fragment_target" />
 </navigation>

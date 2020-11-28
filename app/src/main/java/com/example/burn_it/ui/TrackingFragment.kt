@@ -7,9 +7,7 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -64,6 +62,9 @@ class TrackingFragment : Fragment() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
+    private var target = 0L
+    private var position = 0
+    private    var distanceInMeters = 0
 
 
 
@@ -104,6 +105,10 @@ class TrackingFragment : Fragment() {
             zoomToSeeWholeTrack()
             endRunAndSaveToDb()
         }
+
+        val bundle = TrackingFragmentArgs.fromBundle(requireArguments())
+        target = bundle.targetTime
+        position = bundle.position
 
 
         subscribeToObservers()
@@ -185,7 +190,8 @@ class TrackingFragment : Fragment() {
                         val lat = locationResult.lastLocation.latitude
                         val long = locationResult.lastLocation.longitude
 
-                        viewModel.getWeatherInfo(lat, long)
+                        viewModel.getWeatherInfo(lat, long, binding.celsius, binding.weatherIcon)
+
 
                         viewModel.weatherData.observe(viewLifecycleOwner, Observer {
 
@@ -309,13 +315,7 @@ class TrackingFragment : Fragment() {
         )
     }
 
-    /***
-     * FOR WEEKLY TARGET
-     * 1. convert target time to millisec
-     * 2. compare with the total time ran
-     *      1. if they are equal--mission complete...
-     *
-     * **/
+
     private fun saveImageOnInternalStorage(bmp : Bitmap): String{
         var outputStream:FileOutputStream? = null
         val filePath = Environment.getExternalStorageDirectory().toString()
@@ -329,7 +329,6 @@ class TrackingFragment : Fragment() {
             e.printStackTrace()
         }
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-        Toast.makeText(requireContext(), "saved to internal storage", Toast.LENGTH_SHORT).show()
 
         try {
             outputStream?.flush()
@@ -346,7 +345,7 @@ class TrackingFragment : Fragment() {
     }
     private fun endRunAndSaveToDb() {
         map?.snapshot { bmp ->
-            var distanceInMeters = 0
+
             for(polyline in pathPoints) {
                 distanceInMeters += TrackingUtility.calculatePolylineLength(polyline).toInt()
             }
@@ -395,10 +394,33 @@ class TrackingFragment : Fragment() {
         }.show(parentFragmentManager, CANCEL_DIALOG)
     }
 
+    private fun getTargetResult(): Int{
+
+      return  when(position){
+            0, 1 ->  round((curTimeInMillis.toDouble()/target.toDouble()) * 100).toInt()
+            2 -> {
+                val inKm = distanceInMeters / 1000f
+                round((inKm.toDouble()/target.toDouble()) * 100).toInt()
+            }
+          else -> round((curTimeInMillis.toDouble()/target.toDouble()) * 100).toInt()
+      }
+    }
+
+
+
     private fun stopRun() {
         binding.tvTimer.setText(R.string.timer)
         sendCommandToService(ACTION_STOP_SERVICE)
-        findNavController().navigate(R.id.action_trackingFragment_to_runFragment)
+        if(target == 0L){
+            findNavController().navigate(R.id.runFragment)
+        }
+        else{
+            val percentage = getTargetResult()
+            val action = TrackingFragmentDirections.actionTrackingFragmentToRunFragment(percentage)
+            Timber.d("$percentage, $curTimeInMillis, $target")
+            findNavController().navigate(action)
+        }
+
     }
 
     override fun onResume() {

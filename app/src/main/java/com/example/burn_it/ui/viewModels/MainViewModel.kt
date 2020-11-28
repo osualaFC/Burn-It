@@ -2,6 +2,9 @@ package com.example.burn_it.ui.viewModels
 
 
 import android.util.Log
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.example.burn_it.db.Run
@@ -24,11 +27,13 @@ class MainViewModel @ViewModelInject constructor(private val repository: MainRep
         repository.insertRun(run)
     }
 
-  fun getWeatherInfo(lat: Double, lon:Double){
+  fun getWeatherInfo(lat: Double, lon:Double, view1: TextView, view2: ImageView){
       viewModelScope.launch {
           try{
               if(repository.todayWeather(lat, lon).isSuccessful){
                   _weatherData.value = repository.todayWeather(lat, lon).body()
+                  view1.visibility = View.VISIBLE
+                  view2.visibility = View.VISIBLE
               }
           }
           catch (e: IOException){

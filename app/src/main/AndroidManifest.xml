@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.burn_it">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -20,7 +21,9 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true"
-        android:theme="@style/Theme.BurnIt">
+        android:preserveLegacyExternalStorage="true"
+        android:theme="@style/Theme.BurnIt"
+        tools:targetApi="r">
         <activity android:name=".ui.MainActivity" android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

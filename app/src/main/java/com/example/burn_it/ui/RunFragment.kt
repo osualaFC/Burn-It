@@ -1,13 +1,15 @@
 package com.example.burn_it.ui
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -21,15 +23,16 @@ import com.example.burn_it.utils.TrackingUtility
 import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
+import timber.log.Timber
 
-
+const val REQUEST_CODE_LOCATION_PERMISSION = 1
 @AndroidEntryPoint
 class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
   private val viewModel : MainViewModel by viewModels()
     private var _binding: FragmentRunBinding? = null
     private val binding get() = _binding!!
-    val REQUEST_CODE_LOCATION_PERMISSION = 1
     private lateinit var runAdapter: RunAdapter
+    private var runResult = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,6 +83,12 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         viewModel.runs.observe(viewLifecycleOwner, Observer {
             runAdapter.submitList(it)
         })
+
+        val bundle = RunFragmentArgs.fromBundle(requireArguments())
+        runResult = bundle.percentage
+        Timber.d("$runResult")
+
+        displayedResult(runResult, binding.result)
     }
 
     private fun setupRecyclerView() = binding.rvRuns.apply {
@@ -88,11 +97,34 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         layoutManager = LinearLayoutManager(requireContext())
     }
 
+    @SuppressLint("SetTextI18n")
+    private fun displayedResult(num: Int, textView: TextView) {
+        when {
+            num == 0 -> { textView.visibility = View.GONE}
+            num < 70 -> {
+                textView.text = "$num% complete, you need to sit up"
+                textView.visibility = View.VISIBLE
+            }
+            num <= 99 -> {
+                textView.text = "$num%  complete, you were so close"
+                textView.visibility = View.VISIBLE
+            }
+            num == 100 -> {
+                textView.text = "$num% complete, you are a beast"
+                textView.visibility = View.VISIBLE
+            }
+            num > 100 -> {
+                textView.text = "Way over your target. World Greatest!!!"
+                textView.visibility = View.VISIBLE
+            }
+        }
+    }
+
     private fun requestPermissions() {
-        if(TrackingUtility.hasLocationPermissions(requireContext())) {
+        if (TrackingUtility.hasLocationPermissions(requireContext())) {
             return
         }
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             EasyPermissions.requestPermissions(
                 this,
                 "You need to accept location permissions to use this app.",
