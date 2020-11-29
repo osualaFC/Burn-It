@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.TextView
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -21,7 +20,6 @@ import com.example.burn_it.R
 import com.example.burn_it.adapters.RunAdapter
 import com.example.burn_it.databinding.FragmentRunBinding
 import com.example.burn_it.ui.viewModels.MainViewModel
-import com.example.burn_it.ui.viewModels.StatisticsViewModel
 import com.example.burn_it.utils.SortType
 import com.example.burn_it.utils.TrackingUtility
 import com.google.android.material.snackbar.Snackbar
@@ -29,6 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
+
 
 const val REQUEST_CODE_LOCATION_PERMISSION = 1
 @AndroidEntryPoint
@@ -45,6 +44,8 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentRunBinding.inflate(inflater, container, false)
+
+
         return binding.root
     }
 
@@ -74,7 +75,12 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         spFilter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) {}
 
-            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, pos: Int, id: Long) {
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View?,
+                pos: Int,
+                id: Long
+            ) {
                 when(pos) {
                     0 -> viewModel.sortRuns(SortType.DATE)
                     1 -> viewModel.sortRuns(SortType.RUNNING_TIME)

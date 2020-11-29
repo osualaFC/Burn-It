@@ -131,4 +131,7 @@ dependencies {
     //Progress bar
     compile 'com.jackandphantom.android:circularprogressbar:1.2.0'
 
+    //Lottie animation
+    implementation "com.airbnb.android:lottie:3.4.4"
+
 }

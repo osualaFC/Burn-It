@@ -16,7 +16,11 @@
         tools:layout="@layout/fragment_run" >
         <action
             android:id="@+id/action_runFragment_to_trackingFragment"
-            app:destination="@id/trackingFragment" />
+            app:destination="@id/trackingFragment"
+            app:enterAnim="@anim/slide_left"
+            app:exitAnim="@anim/wait_anim"
+            app:popEnterAnim="@anim/wait_anim"
+            app:popExitAnim="@anim/slide_right"/>
         <argument
             android:name="percentage"
             app:argType="integer"
@@ -35,10 +39,18 @@
         tools:layout="@layout/fragment_tracking" >
         <action
             android:id="@+id/action_trackingFragment_to_runFragment"
-            app:destination="@id/runFragment" />
+            app:destination="@id/runFragment"
+            app:enterAnim="@anim/slide_left"
+            app:exitAnim="@anim/wait_anim"
+            app:popEnterAnim="@anim/wait_anim"
+            app:popExitAnim="@anim/slide_right"/>
         <action
             android:id="@+id/action_trackingFragment_to_targetFragment"
-            app:destination="@id/targetFragment" />
+            app:destination="@id/targetFragment"
+            app:enterAnim="@anim/slide_left"
+            app:exitAnim="@anim/wait_anim"
+            app:popEnterAnim="@anim/wait_anim"
+            app:popExitAnim="@anim/slide_right"/>
         <argument
             android:name="targetTime"
             app:argType="long"
@@ -61,7 +73,11 @@
         tools:layout="@layout/fragment_setup" >
         <action
             android:id="@+id/action_setupFragment_to_runFragment"
-            app:destination="@id/runFragment" />
+            app:destination="@id/runFragment"
+            app:enterAnim="@anim/slide_left"
+            app:exitAnim="@anim/wait_anim"
+            app:popEnterAnim="@anim/wait_anim"
+            app:popExitAnim="@anim/slide_right"/>
     </fragment>
     <fragment
         android:id="@+id/targetFragment"
