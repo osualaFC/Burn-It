@@ -13,7 +13,7 @@ class MainRepository @Inject constructor(private val runDao: RunDAO, private val
 
     suspend fun deleteRun(run: Run) = runDao.deleteRun(run)
 
-    suspend fun deleteAll() = runDao.deleteAllOrder()
+    suspend fun deleteAll() = runDao.deleteAllRuns()
 
     fun getAllRunsSortedByDate() = runDao.getAllRunsSortedByDate()
 

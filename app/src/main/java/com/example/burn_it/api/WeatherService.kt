@@ -1,7 +1,7 @@
 package com.example.burn_it.api
 
+import com.example.burn_it.BuildConfig.API_KEY
 import com.example.burn_it.db.Weather
-import com.example.burn_it.utils.Constants.API_KEY
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
