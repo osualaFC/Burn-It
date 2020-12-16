@@ -7,6 +7,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.example.burn_it.getOrAwaitValue
 import com.google.common.truth.Truth.assertThat
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
@@ -14,24 +16,28 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
+import javax.inject.Named
 
 @ExperimentalCoroutinesApi
-@RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
 @SmallTest
 class RunDaoTest {
+
+    @get:Rule
+    var hiltRule = HiltAndroidRule(this)
     
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
-    
-    private lateinit var database: RunDatabase
-    private lateinit var dao: RunDAO
+
+    @Inject
+    @Named("test_db")
+     lateinit var database: RunDatabase
+     lateinit var dao: RunDAO
 
     @Before
     fun setUp(){
-        database = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(), RunDatabase::class.java
-        ).allowMainThreadQueries().build()
-
+        hiltRule.inject()
         dao = database.getRunDao()
     }
 
@@ -59,7 +65,7 @@ class RunDaoTest {
 
         dao.deleteRun(run)
 
-        val allRuns = dao.getAllRunsSortedByAvgSpeed().getOrAwaitValue()
+        val allRuns = dao.getAllRunsSortedByDate().getOrAwaitValue()
 
         assertThat(allRuns).doesNotContain(run)
 
@@ -92,7 +98,7 @@ class RunDaoTest {
 
        dao.deleteAllRuns()
 
-        val allRuns = dao.getAllRunsSortedByAvgSpeed().getOrAwaitValue()
+        val allRuns = dao.getAllRunsSortedByDate().getOrAwaitValue()
 
         assertThat(allRuns).isEmpty()
 
