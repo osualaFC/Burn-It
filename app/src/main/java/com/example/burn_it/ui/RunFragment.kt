@@ -2,6 +2,7 @@ package com.example.burn_it.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,12 +17,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.erkutaras.showcaseview.ShowcaseManager
 import com.example.burn_it.R
 import com.example.burn_it.adapters.RunAdapter
 import com.example.burn_it.databinding.FragmentRunBinding
 import com.example.burn_it.ui.viewModels.MainViewModel
 import com.example.burn_it.utils.SortType
 import com.example.burn_it.utils.TrackingUtility
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
@@ -37,6 +40,8 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private val binding get() = _binding!!
     private lateinit var runAdapter: RunAdapter
     private var runResult = 0
+    private lateinit var targetBtn: FloatingActionButton
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,14 +50,16 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         // Inflate the layout for this fragment
         _binding = FragmentRunBinding.inflate(inflater, container, false)
 
-
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.fabRun.setOnClickListener {
+        targetBtn = binding.fabTarget
+
+            binding.fabRun.setOnClickListener {
             findNavController().navigate(R.id.trackingFragment)
         }
 
@@ -132,6 +139,24 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         displayedResult(runResult, binding.result)
 
 
+        val builder = ShowcaseManager.Builder()
+        builder.context(requireContext())
+            .key("KEY")
+            .developerMode(true)
+            .view(targetBtn)
+            .descriptionImageRes(R.mipmap.ic_launcher)
+            .descriptionTitle("LOREM IPSUM")
+            .descriptionText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+            .buttonText("Done")
+            .buttonVisibility(true)
+            .cancelButtonVisibility(true)
+            .cancelButtonColor(Color.BLUE)
+            .add()
+            .build()
+            .show()
+
+
+
 }
     private fun setupRecyclerView() = binding.rvRuns.apply {
         runAdapter = RunAdapter()
@@ -209,6 +234,7 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
+
 
     override fun onDestroy() {
         super.onDestroy()

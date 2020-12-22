@@ -6,6 +6,8 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.example.burn_it.getOrAwaitValue
+import com.example.burn_it.launchFragmentInHiltContainer
+import com.example.burn_it.ui.*
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -44,6 +46,11 @@ class RunDaoTest {
     @After
     fun tearDown(){
         database.close()
+    }
+
+    @Test
+    fun testLaunchFragmentHiltContainer(){
+        launchFragmentInHiltContainer<RunFragment> {  }
     }
 
 

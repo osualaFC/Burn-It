@@ -7,11 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.burn_it.R
-import com.example.burn_it.databinding.FragmentRunBinding
 import com.example.burn_it.databinding.FragmentSetupBinding
 import com.example.burn_it.utils.Constants.KEY_FIRST_TIME_TOGGLE
 import com.example.burn_it.utils.Constants.KEY_NAME
@@ -82,6 +80,7 @@ class SetupFragment : Fragment() {
         return true
 
     }
+
 
 
     override fun onDestroy() {
