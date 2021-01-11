@@ -22,7 +22,7 @@ import javax.inject.Inject
 class SetupFragment : Fragment() {
 
     private var _binding: FragmentSetupBinding? = null
-    private val binding get() = _binding!!
+    private val ui get() = _binding!!
 
     @Inject
     lateinit var sharedPref: SharedPreferences
@@ -36,7 +36,7 @@ class SetupFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentSetupBinding.inflate(inflater, container, false)
-        return binding.root
+        return ui.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,7 +53,7 @@ class SetupFragment : Fragment() {
             )
         }
 
-        binding.tvContinue.setOnClickListener {
+        ui.tvContinue.setOnClickListener {
             val success = writePersonalDataToSharedPref()
             if(success) {
                 findNavController().navigate(R.id.action_setupFragment_to_runFragment)
@@ -64,8 +64,8 @@ class SetupFragment : Fragment() {
     }
 
     private fun writePersonalDataToSharedPref(): Boolean {
-        val name = binding.etName.text.toString()
-        val weight = binding.etWeight.text.toString()
+        val name = ui.etName.text.toString()
+        val weight = ui.etWeight.text.toString()
         if(name.isEmpty() || weight.isEmpty()) {
             return false
         }

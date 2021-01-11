@@ -50,7 +50,7 @@ const val TAG = "Tracking Fragment"
 class TrackingFragment : Fragment() {
 
     private var _binding: FragmentTrackingBinding? = null
-    private val binding get() = _binding!!
+    private val ui get() = _binding!!
     private val viewModel by viewModels<MainViewModel>()
     private var map: GoogleMap? = null
     private lateinit var mapView: MapView
@@ -78,8 +78,8 @@ class TrackingFragment : Fragment() {
         setHasOptionsMenu(true)
         _binding = FragmentTrackingBinding.inflate(inflater, container, false)
 
-        mapView = binding.mapView
-        return binding.root
+        mapView = ui.mapView
+        return ui.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -96,11 +96,11 @@ class TrackingFragment : Fragment() {
             //it.mapType = GoogleMap.MAP_TYPE_NORMAL
         }
 
-        binding.btnToggleRun.setOnClickListener {
+        ui.btnToggleRun.setOnClickListener {
             toggleRun()
         }
 
-        binding.btnFinishRun.setOnClickListener {
+        ui.btnFinishRun.setOnClickListener {
             zoomToSeeWholeTrack()
             endRunAndSaveToDb()
         }
@@ -166,7 +166,7 @@ class TrackingFragment : Fragment() {
         TrackingService.timeRunInMillis.observe(viewLifecycleOwner, Observer {
             curTimeInMillis = it
             val formattedTime = TrackingUtility.getFormattedStopWatchTime(curTimeInMillis, true)
-            binding.tvTimer.text = formattedTime
+            ui.tvTimer.text = formattedTime
         })
     }
 
@@ -189,7 +189,7 @@ class TrackingFragment : Fragment() {
                         val lat = locationResult.lastLocation.latitude
                         val long = locationResult.lastLocation.longitude
 
-                        viewModel.getWeatherInfo(lat, long, binding.celsius, binding.weatherIcon)
+                        viewModel.getWeatherInfo(lat, long, ui.celsius, ui.weatherIcon)
 
 
                         viewModel.weatherData.observe(viewLifecycleOwner, Observer {
@@ -199,10 +199,10 @@ class TrackingFragment : Fragment() {
 
                             val list = it.weather
                             for (info in list) {
-                                binding.weatherType.text = info.description
+                                ui.weatherType.text = info.description
                             }
-                            binding.degrees.text = (round(it.main.temp - 273.15)).toString()
-                            binding.today.text = it.name
+                            ui.degrees.text = (round(it.main.temp - 273.15)).toString()
+                            ui.today.text = it.name
 
                         })
                     } else {
@@ -278,12 +278,12 @@ class TrackingFragment : Fragment() {
     private fun updateTracking(isTracking: Boolean) {
         this.isTracking = isTracking
         if (!isTracking && curTimeInMillis > 0L) {
-            binding.btnToggleRun.setText(R.string.start)
-            binding.btnFinishRun.visibility = View.VISIBLE
+            ui.btnToggleRun.setText(R.string.start)
+            ui.btnFinishRun.visibility = View.VISIBLE
         } else if (isTracking) {
-            binding.btnToggleRun.setText(R.string.stop)
+            ui.btnToggleRun.setText(R.string.stop)
             menu?.getItem(0)?.isVisible = true
-            binding.btnFinishRun.visibility = View.GONE
+            ui.btnFinishRun.visibility = View.GONE
         }
     }
 
@@ -408,7 +408,7 @@ class TrackingFragment : Fragment() {
 
 
     private fun stopRun() {
-        binding.tvTimer.setText(R.string.timer)
+        ui.tvTimer.setText(R.string.timer)
         sendCommandToService(ACTION_STOP_SERVICE)
         if(target == 0L){
             findNavController().navigate(R.id.runFragment)

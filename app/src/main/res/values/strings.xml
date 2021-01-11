@@ -50,4 +50,5 @@
     <string name="cancel_title_stat">"Clear All Data?"</string>
     <string name="cancel_mesage_track">"Are you sure to cancel the current run and delete all its data?"</string>
     <string name="cancel_title_track">"Cancel the Run?"</string>
+
 </resources>

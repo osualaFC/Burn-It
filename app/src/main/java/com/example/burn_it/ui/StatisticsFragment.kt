@@ -26,7 +26,7 @@ const val CLEAR_DIALOG = "clear"
 class StatisticsFragment : Fragment() {
 
     private var _binding: FragmentStatisticsBinding? = null
-    private val binding get() = _binding!!
+    private val ui get() = _binding!!
     private val viewModel by viewModels<StatisticsViewModel>()
     lateinit var barChart: BarChart
 
@@ -38,9 +38,9 @@ class StatisticsFragment : Fragment() {
         setHasOptionsMenu(true)
         _binding = FragmentStatisticsBinding.inflate(inflater, container, false)
 
-         barChart = binding.barChart
+         barChart = ui.barChart
 
-        return binding.root
+        return ui.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -88,9 +88,9 @@ class StatisticsFragment : Fragment() {
         viewModel.totalTimeRun.observe(viewLifecycleOwner, Observer {
             it?.let {
                 val totalTimeRun = TrackingUtility.getFormattedStopWatchTime(it)
-                binding.tvTotalTime.text = totalTimeRun
-                binding.timePBar.maxProgress = 10000000f
-                binding.timePBar.progress = it.toFloat()
+                ui.tvTotalTime.text = totalTimeRun
+                ui.timePBar.maxProgress = 10000000f
+                ui.timePBar.progress = it.toFloat()
             }
         })
         viewModel.totalDistance.observe(viewLifecycleOwner, Observer {
@@ -98,26 +98,26 @@ class StatisticsFragment : Fragment() {
                 val km = it / 1000f
                 val totalDistance = round(km * 10f) / 10f
                 val totalDistanceString = "${totalDistance}km"
-                binding.tvTotalDistance.text = totalDistanceString
-                binding.distancePBar.maxProgress = 1000f
-                binding.distancePBar.progress = it.toFloat()
+                ui.tvTotalDistance.text = totalDistanceString
+                ui.distancePBar.maxProgress = 1000f
+                ui.distancePBar.progress = it.toFloat()
             }
         })
         viewModel.totalAvgSpeed.observe(viewLifecycleOwner, Observer {
             it?.let {
                 val avgSpeed = round(it * 10f) / 10f
                 val avgSpeedString = "${avgSpeed}km/h"
-                binding.tvAverageSpeed.text = avgSpeedString
-                binding.speedPBar.maxProgress = 100f
-                binding.speedPBar.progress = it
+                ui.tvAverageSpeed.text = avgSpeedString
+                ui.speedPBar.maxProgress = 100f
+                ui.speedPBar.progress = it
             }
         })
         viewModel.totalCaloriesBurned.observe(viewLifecycleOwner, Observer {
             it?.let {
                 val totalCalories = "${it}kcal"
-                binding.tvTotalCalories.text = totalCalories
-                binding.timePBar.maxProgress = 1000000f
-                binding.timePBar.progress = it.toFloat()
+                ui.tvTotalCalories.text = totalCalories
+                ui.timePBar.maxProgress = 1000000f
+                ui.timePBar.progress = it.toFloat()
             }
         })
 
