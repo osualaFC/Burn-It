@@ -2,7 +2,6 @@ package com.example.burn_it.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -17,7 +17,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.erkutaras.showcaseview.ShowcaseManager
 import com.example.burn_it.R
 import com.example.burn_it.adapters.RunAdapter
 import com.example.burn_it.databinding.FragmentRunBinding
@@ -37,7 +36,7 @@ const val REQUEST_CODE_LOCATION_PERMISSION = 1
 class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private val viewModel by viewModels<MainViewModel>()
     private var _binding: FragmentRunBinding? = null
-    private val binding get() = _binding!!
+    private val ui get() = _binding!!
     private lateinit var runAdapter: RunAdapter
     private var runResult = 0
     private lateinit var targetBtn: FloatingActionButton
@@ -50,27 +49,28 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         // Inflate the layout for this fragment
         _binding = FragmentRunBinding.inflate(inflater, container, false)
 
-        return binding.root
+        return ui.root
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        targetBtn = binding.fabTarget
+        targetBtn = ui.fabTarget
 
-            binding.fabRun.setOnClickListener {
+            ui.fabRun.setOnClickListener {
             findNavController().navigate(R.id.trackingFragment)
         }
 
-        binding.fabTarget.setOnClickListener {
+        ui.fabTarget.setOnClickListener {
             findNavController().navigate(R.id.targetFragment)
         }
 
         requestPermissions()
 
         setupRecyclerView()
-        val spFilter = binding.spFilter
+        val spFilter = ui.spFilter
         when(viewModel.sortType) {
             SortType.DATE -> spFilter.setSelection(0)
             SortType.RUNNING_TIME -> spFilter.setSelection(1)
@@ -128,7 +128,7 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         }
 
         ItemTouchHelper(itemTouchHelperCallback).apply {
-            attachToRecyclerView(binding.rvRuns)
+            attachToRecyclerView(ui.rvRuns)
         }
 
 
@@ -136,29 +136,12 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         runResult = bundle.percentage
         Timber.d("$runResult")
 
-        displayedResult(runResult, binding.result)
-
-
-        val builder = ShowcaseManager.Builder()
-        builder.context(requireContext())
-            .key("KEY")
-            .developerMode(true)
-            .view(targetBtn)
-            .descriptionImageRes(R.mipmap.ic_launcher)
-            .descriptionTitle("LOREM IPSUM")
-            .descriptionText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
-            .buttonText("Done")
-            .buttonVisibility(true)
-            .cancelButtonVisibility(true)
-            .cancelButtonColor(Color.BLUE)
-            .add()
-            .build()
-            .show()
+        displayedResult(runResult, ui.result)
 
 
 
 }
-    private fun setupRecyclerView() = binding.rvRuns.apply {
+    private fun setupRecyclerView() = ui.rvRuns.apply {
         runAdapter = RunAdapter()
         adapter = runAdapter
         layoutManager = LinearLayoutManager(requireContext())
@@ -233,6 +216,10 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+
     }
 
 

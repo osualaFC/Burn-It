@@ -11,7 +11,7 @@ import com.example.burn_it.databinding.FragmentTargetBinding
 
 class TargetFragment : Fragment() {
     private var _binding: FragmentTargetBinding? = null
-    private val binding get() = _binding!!
+    private val ui get() = _binding!!
 
 
     override fun onCreateView(
@@ -19,7 +19,7 @@ class TargetFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentTargetBinding.inflate(inflater, container, false)
-        return binding.root
+        return ui.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -28,9 +28,9 @@ class TargetFragment : Fragment() {
 
 
 
-        binding.setTodayTarget.setOnClickListener {
-            val targetTime = binding.etTodayTarget.text.toString()
-            val position = binding.spFilter.selectedItemPosition
+        ui.setTodayTarget.setOnClickListener {
+            val targetTime = ui.etTodayTarget.text.toString()
+            val position = ui.spFilter.selectedItemPosition
 
             val target = when (position) {
                 0 -> targetTime.toInt().minstoMilliSec()
