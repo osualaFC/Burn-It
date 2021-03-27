@@ -50,5 +50,12 @@
     <string name="cancel_title_stat">"Clear All Data?"</string>
     <string name="cancel_mesage_track">"Are you sure to cancel the current run and delete all its data?"</string>
     <string name="cancel_title_track">"Cancel the Run?"</string>
+    <string name="target_text">Click here to set a target</string>
+    <string name="run_text">Click here to start a run</string>
+    <string name="all_runs">Your runs will be visible here</string>
+    <string name="run_stats">Click here to view your stats</string>
+    <string name="settings_text">Click here to modify your profile</string>
+    <string name="next">Next</string>
+    <string name="done">Done</string>
 
 </resources>

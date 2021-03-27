@@ -8,11 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.Button
 import android.widget.TextView
-import androidx.annotation.RequiresApi
+import androidx.annotation.IdRes
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,17 +24,24 @@ import com.example.burn_it.R
 import com.example.burn_it.adapters.RunAdapter
 import com.example.burn_it.databinding.FragmentRunBinding
 import com.example.burn_it.ui.viewModels.MainViewModel
+import com.example.burn_it.utils.IntroBalloonFactory
+import com.example.burn_it.utils.IntroBalloonFactory.Companion.balloonBuilder
 import com.example.burn_it.utils.SortType
 import com.example.burn_it.utils.TrackingUtility
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.skydoves.balloon.Balloon
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
+import javax.inject.Inject
 
 
 const val REQUEST_CODE_LOCATION_PERMISSION = 1
+
 @AndroidEntryPoint
 class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private val viewModel by viewModels<MainViewModel>()
@@ -39,7 +49,10 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private val ui get() = _binding!!
     private lateinit var runAdapter: RunAdapter
     private var runResult = 0
-    private lateinit var targetBtn: FloatingActionButton
+
+    @set:Inject
+    var isFirstAppOpen = true
+    private lateinit var bottomNav: BottomNavigationView
 
 
     override fun onCreateView(
@@ -48,18 +61,20 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentRunBinding.inflate(inflater, container, false)
+        bottomNav = activity?.findViewById(R.id.bottomNavigationView)!!
 
         return ui.root
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        targetBtn = ui.fabTarget
+        if (isFirstAppOpen) {
+            showBalloon()
+        }
 
-            ui.fabRun.setOnClickListener {
+        ui.fabRun.setOnClickListener {
             findNavController().navigate(R.id.trackingFragment)
         }
 
@@ -67,11 +82,14 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             findNavController().navigate(R.id.targetFragment)
         }
 
-        requestPermissions()
+        lifecycleScope.launch {
+            callPermissions()
+        }
+
 
         setupRecyclerView()
         val spFilter = ui.spFilter
-        when(viewModel.sortType) {
+        when (viewModel.sortType) {
             SortType.DATE -> spFilter.setSelection(0)
             SortType.RUNNING_TIME -> spFilter.setSelection(1)
             SortType.DISTANCE -> spFilter.setSelection(2)
@@ -88,7 +106,7 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                 pos: Int,
                 id: Long
             ) {
-                when(pos) {
+                when (pos) {
                     0 -> viewModel.sortRuns(SortType.DATE)
                     1 -> viewModel.sortRuns(SortType.RUNNING_TIME)
                     2 -> viewModel.sortRuns(SortType.DISTANCE)
@@ -99,6 +117,11 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         }
 
         viewModel.runs.observe(viewLifecycleOwner, Observer {
+            if (it.isEmpty()) {
+                ui.spFilter.visibility = View.GONE
+                ui.tvFilterBy.visibility = View.GONE
+                ui.center.visibility = View.VISIBLE
+            }
             runAdapter.submitList(it)
         })
 
@@ -137,10 +160,50 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         Timber.d("$runResult")
 
         displayedResult(runResult, ui.result)
+    }
+
+    private fun showBalloon() {
+        val targetBalloon =
+            balloonBuilder(requireContext(), viewLifecycleOwner)
+        val runBalloon =
+            balloonBuilder(requireContext(), viewLifecycleOwner)
+        val runBottomBalloon =
+            balloonBuilder(requireContext(), viewLifecycleOwner)
+        val statsBottomBalloon =
+            balloonBuilder(requireContext(), viewLifecycleOwner)
+        val settingsBottomBalloon =
+            balloonBuilder(requireContext(), viewLifecycleOwner)
+
+        setUpBalloon(targetBalloon, R.string.target_text)
+        setUpBalloon(runBalloon, R.string.run_text)
+        setUpBalloon(runBottomBalloon, R.string.all_runs)
+        setUpBalloon(statsBottomBalloon, R.string.run_stats)
+        setUpBalloon(settingsBottomBalloon, R.string.settings_text, R.string.done)
+
+        targetBalloon
+            .relayShow(runBalloon, ui.fabRun)
+            .relayShowAlignBottom(runBottomBalloon, ui.center)
+            .relayShow(statsBottomBalloon, bottomNav, 130, 0)
+            .relayShowAlignTop(settingsBottomBalloon, bottomNav, 390, 0)
+
+        targetBalloon.showAlignTop(ui.fabTarget)
 
 
+    }
 
-}
+    private fun setUpBalloon(balloon: Balloon, @StringRes text: Int, btnText : Int = R.string.next) {
+        val btn = balloon.getContentView().findViewById<Button>(R.id.balloon_btn)
+        val textView = balloon.getContentView().findViewById<TextView>(R.id.balloon_text)
+        textView.text = getString(text)
+        btn.text = getString(btnText)
+        btn.setOnClickListener { balloon.dismiss() }
+    }
+
+    private suspend fun callPermissions() {
+        delay(30000)
+        requestPermissions()
+    }
+
     private fun setupRecyclerView() = ui.rvRuns.apply {
         runAdapter = RunAdapter()
         adapter = runAdapter
@@ -150,7 +213,9 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     @SuppressLint("SetTextI18n")
     private fun displayedResult(num: Int, textView: TextView) {
         when {
-            num == 0 -> { textView.visibility = View.GONE}
+            num == 0 -> {
+                textView.visibility = View.GONE
+            }
             num < 70 -> {
                 textView.text = "$num% complete, you need to sit up"
                 textView.visibility = View.VISIBLE
@@ -196,12 +261,14 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
             )
         }
+
     }
 
 
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
-        if(EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
             AppSettingsDialog.Builder(this).build().show()
+
         } else {
             requestPermissions()
         }

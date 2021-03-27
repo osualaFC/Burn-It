@@ -78,6 +78,7 @@
                 android:backgroundTint="@color/colorPrimary"
                 android:ems="10"
                 android:hint="@string/_2"
+                android:textCursorDrawable="@color/colorWhite"
                 android:textColor="@color/colorWhite"
                 android:inputType="number" />
 

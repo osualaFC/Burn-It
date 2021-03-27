@@ -33,8 +33,8 @@ class TargetFragment : Fragment() {
             val position = ui.spFilter.selectedItemPosition
 
             val target = when (position) {
-                0 -> targetTime.toInt().minstoMilliSec()
-                1 -> targetTime.toInt().hrstoMilliSec()
+                0 -> targetTime.toInt().minsToMilliSec()
+                1 -> targetTime.toInt().hrsToMilliSec()
                 else -> targetTime.toInt().toLong()
             }
 
@@ -43,11 +43,11 @@ class TargetFragment : Fragment() {
         }
     }
 
-    fun Int.minstoMilliSec(): Long {
+    private fun Int.minsToMilliSec(): Long {
         return (this * 60000).toLong()
     }
 
-    fun Int.hrstoMilliSec(): Long {
+    private fun Int.hrsToMilliSec(): Long {
         return (this * 60000).toLong()
     }
 

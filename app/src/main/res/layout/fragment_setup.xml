@@ -58,6 +58,7 @@
             android:backgroundTint="@color/colorPrimary"
             android:ems="10"
             android:hint="@string/your_name"
+            android:textCursorDrawable="@color/colorWhite"
             android:inputType="textPersonName" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -79,6 +80,7 @@
             android:backgroundTint="@color/colorPrimary"
             android:ems="10"
             android:hint="@string/your_weight"
+            android:textCursorDrawable="@color/colorWhite"
             android:inputType="numberDecimal" />
 
     </com.google.android.material.textfield.TextInputLayout>
