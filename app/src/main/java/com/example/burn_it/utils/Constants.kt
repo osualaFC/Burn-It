@@ -23,6 +23,9 @@ object Constants {
     const val KEY_FIRST_TIME_TOGGLE = "KEY_FIRST_TIME_TOGGLE"
     const val KEY_NAME = "KEY_NAME"
     const val KEY_WEIGHT = "KEY_WEIGHT"
+    const val TARGET = "TARGET"
+    const val POSITION = "POSITION"
+    const val PERCENTAGE = "PERCENTAGE"
     const val BASE_URL = "http://api.openweathermap.org/data/2.5/"
 
 

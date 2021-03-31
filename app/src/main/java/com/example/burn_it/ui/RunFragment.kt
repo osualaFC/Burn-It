@@ -2,6 +2,7 @@ package com.example.burn_it.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Button
 import android.widget.TextView
-import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -24,7 +24,9 @@ import com.example.burn_it.R
 import com.example.burn_it.adapters.RunAdapter
 import com.example.burn_it.databinding.FragmentRunBinding
 import com.example.burn_it.ui.viewModels.MainViewModel
-import com.example.burn_it.utils.IntroBalloonFactory
+import com.example.burn_it.utils.Constants.PERCENTAGE
+import com.example.burn_it.utils.Constants.POSITION
+import com.example.burn_it.utils.Constants.TARGET
 import com.example.burn_it.utils.IntroBalloonFactory.Companion.balloonBuilder
 import com.example.burn_it.utils.SortType
 import com.example.burn_it.utils.TrackingUtility
@@ -40,6 +42,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
+
 const val REQUEST_CODE_LOCATION_PERMISSION = 1
 
 @AndroidEntryPoint
@@ -48,10 +51,11 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private var _binding: FragmentRunBinding? = null
     private val ui get() = _binding!!
     private lateinit var runAdapter: RunAdapter
-    private var runResult = 0
-
+    private var runResult = 0F
     @set:Inject
     var isFirstAppOpen = true
+    @Inject
+    lateinit var sharedPref: SharedPreferences
     private lateinit var bottomNav: BottomNavigationView
 
 
@@ -154,9 +158,7 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             attachToRecyclerView(ui.rvRuns)
         }
 
-
-        val bundle = RunFragmentArgs.fromBundle(requireArguments())
-        runResult = bundle.percentage
+        runResult = sharedPref.getFloat(PERCENTAGE, 0F)
         Timber.d("$runResult")
 
         displayedResult(runResult, ui.result)
@@ -211,28 +213,37 @@ class RunFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun displayedResult(num: Int, textView: TextView) {
+    private fun displayedResult(num: Float, textView: TextView) {
         when {
-            num == 0 -> {
+            num == 0f -> {
                 textView.visibility = View.GONE
             }
-            num < 70 -> {
-                textView.text = "$num% complete, you need to sit up"
+            num < 70f -> {
+                textView.text = "${num.toInt()}% complete, you need to sit up"
                 textView.visibility = View.VISIBLE
             }
-            num <= 99 -> {
-                textView.text = "$num%  complete, you were so close"
+            num <= 99f -> {
+                textView.text = "${num.toInt()}%  complete, you were so close"
                 textView.visibility = View.VISIBLE
             }
-            num == 100 -> {
-                textView.text = "$num% complete, you are a beast"
+            num == 100f -> {
+                textView.text = "${num.toInt()}% complete, you are a beast"
                 textView.visibility = View.VISIBLE
             }
-            num > 100 -> {
+            num > 100f -> {
                 textView.text = "Way over your target. World Greatest!!!"
                 textView.visibility = View.VISIBLE
             }
         }
+        clearFromSharedPref()
+    }
+
+    private fun clearFromSharedPref(){
+        sharedPref.edit()
+            .remove(PERCENTAGE)
+            .remove(POSITION)
+            .remove(TARGET)
+            .apply()
     }
 
     private fun requestPermissions() {

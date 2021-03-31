@@ -2,27 +2,29 @@ package com.example.burn_it.adapters
 
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.example.burn_it.R
 import com.example.burn_it.databinding.ItemRunBinding
 import com.example.burn_it.db.Run
 import com.example.burn_it.utils.TrackingUtility
 import java.text.SimpleDateFormat
+import android.util.Base64
 import java.util.*
+
 
 class RunAdapter : RecyclerView.Adapter<RunAdapter.RunViewHolder>() {
 
-    inner class RunViewHolder(private val binding : ItemRunBinding) : RecyclerView.ViewHolder(binding.root){
+    inner class RunViewHolder(private val binding: ItemRunBinding) : RecyclerView.ViewHolder(binding.root){
 
         fun bind(run: Run){
             binding.apply{
                 if(run.img.isNotEmpty()){
-                    ivRunImage.setImageBitmap(BitmapFactory.decodeFile(run.img))
+                    val decodedString: ByteArray = Base64.decode(run.img, Base64.DEFAULT)
+                    val decodedByte =
+                        BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+                    ivRunImage.setImageBitmap(decodedByte)
                 }
               //  Glide.with(this.ivRunImage).load(run.img).into(ivRunImage)
 

@@ -13,20 +13,8 @@
         android:id="@+id/runFragment"
         android:name="com.example.burn_it.ui.RunFragment"
         android:label="fragment_run"
-        tools:layout="@layout/fragment_run" >
-        <action
-            android:id="@+id/action_runFragment_to_trackingFragment"
-            app:destination="@id/trackingFragment"
-            app:enterAnim="@anim/slide_left"
-            app:exitAnim="@anim/wait_anim"
-            app:popEnterAnim="@anim/wait_anim"
-            app:popExitAnim="@anim/slide_right"/>
-        <argument
-            android:name="percentage"
-            app:argType="integer"
-            android:defaultValue="0" />
+        tools:layout="@layout/fragment_run" />
 
-    </fragment>
     <fragment
         android:id="@+id/statisticsFragment"
         android:name="com.example.burn_it.ui.StatisticsFragment"
@@ -36,31 +24,8 @@
         android:id="@+id/trackingFragment"
         android:name="com.example.burn_it.ui.TrackingFragment"
         android:label="fragment_tracking"
-        tools:layout="@layout/fragment_tracking" >
-        <action
-            android:id="@+id/action_trackingFragment_to_runFragment"
-            app:destination="@id/runFragment"
-            app:enterAnim="@anim/slide_left"
-            app:exitAnim="@anim/wait_anim"
-            app:popEnterAnim="@anim/wait_anim"
-            app:popExitAnim="@anim/slide_right"/>
-        <action
-            android:id="@+id/action_trackingFragment_to_targetFragment"
-            app:destination="@id/targetFragment"
-            app:enterAnim="@anim/slide_left"
-            app:exitAnim="@anim/wait_anim"
-            app:popEnterAnim="@anim/wait_anim"
-            app:popExitAnim="@anim/slide_right"/>
-        <argument
-            android:name="targetTime"
-            app:argType="long"
-            android:defaultValue="0L"/>
-        <argument
-            android:name="position"
-            app:argType="integer"
-            android:defaultValue="0" />
+        tools:layout="@layout/fragment_tracking" />
 
-    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.burn_it.ui.SettingsFragment"
@@ -70,15 +35,8 @@
         android:id="@+id/setupFragment"
         android:name="com.example.burn_it.ui.SetupFragment"
         android:label="fragment_setup"
-        tools:layout="@layout/fragment_setup" >
-        <action
-            android:id="@+id/action_setupFragment_to_runFragment"
-            app:destination="@id/runFragment"
-            app:enterAnim="@anim/slide_left"
-            app:exitAnim="@anim/wait_anim"
-            app:popEnterAnim="@anim/wait_anim"
-            app:popExitAnim="@anim/slide_right"/>
-    </fragment>
+        tools:layout="@layout/fragment_setup" />
+
     <fragment
         android:id="@+id/targetFragment"
         android:name="com.example.burn_it.ui.TargetFragment"

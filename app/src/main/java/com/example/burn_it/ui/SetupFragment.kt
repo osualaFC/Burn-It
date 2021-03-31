@@ -17,17 +17,16 @@ import com.example.burn_it.utils.Constants.KEY_WEIGHT
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import javax.inject.Named
 
 @AndroidEntryPoint
 class SetupFragment : Fragment() {
 
     private var _binding: FragmentSetupBinding? = null
     private val ui get() = _binding!!
-
     @Inject
     lateinit var sharedPref: SharedPreferences
-
-    @set:Inject/**cos its a primitive type**/
+    @set:Inject
     var isFirstAppOpen = true
 
     override fun onCreateView(
@@ -78,10 +77,7 @@ class SetupFragment : Fragment() {
         val toolbarTitle =  requireActivity().findViewById<TextView>(R.id.tvToolbarTitle)
         toolbarTitle.text = toolbarText
         return true
-
     }
-
-
 
     override fun onDestroy() {
         super.onDestroy()

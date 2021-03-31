@@ -2,10 +2,11 @@ package com.example.burn_it.ui
 
 import android.Manifest
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Environment
+import android.util.Base64
 import android.view.*
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -23,8 +24,11 @@ import com.example.burn_it.utils.Constants.ACTION_PAUSE_SERVICE
 import com.example.burn_it.utils.Constants.ACTION_START_OR_RESUME_SERVICE
 import com.example.burn_it.utils.Constants.ACTION_STOP_SERVICE
 import com.example.burn_it.utils.Constants.MAP_ZOOM
+import com.example.burn_it.utils.Constants.PERCENTAGE
 import com.example.burn_it.utils.Constants.POLYLINE_COLOR
 import com.example.burn_it.utils.Constants.POLYLINE_WIDTH
+import com.example.burn_it.utils.Constants.POSITION
+import com.example.burn_it.utils.Constants.TARGET
 import com.example.burn_it.utils.TrackingUtility
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -35,10 +39,7 @@ import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
+import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -61,14 +62,13 @@ class TrackingFragment : Fragment() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
-    private var target = 0L
-    private var position = 0
+    private var target = 0F
+    private var position = 0F
     private    var distanceInMeters = 0
-
-
-
     @set:Inject
     var weight = 80f
+    @Inject
+    lateinit var sharedPref: SharedPreferences
 
 
     override fun onCreateView(
@@ -92,8 +92,6 @@ class TrackingFragment : Fragment() {
         mapView.getMapAsync {
             map = it
             addAllPolylines()
-            //setMapStyle(it)
-            //it.mapType = GoogleMap.MAP_TYPE_NORMAL
         }
 
         ui.btnToggleRun.setOnClickListener {
@@ -105,15 +103,12 @@ class TrackingFragment : Fragment() {
             endRunAndSaveToDb()
         }
 
-        val bundle = TrackingFragmentArgs.fromBundle(requireArguments())
-        target = bundle.targetTime
-        position = bundle.position
-
+        target = sharedPref.getFloat(TARGET, 1f)
+        position = sharedPref.getFloat(POSITION, 0f)
 
         subscribeToObservers()
         getLocation()
         startLocation()
-
 
         /***call stop run on screen rotation**/
         if (savedInstanceState != null) {
@@ -123,28 +118,7 @@ class TrackingFragment : Fragment() {
                 stopRun()
             }
         }
-
-
     }
-
-//    /**map style func**/
-//    private fun setMapStyle(map: GoogleMap) {
-//        try {
-//            val success = map.setMapStyle(
-//                MapStyleOptions.loadRawResourceStyle(
-//                    requireContext(),
-//                    R.raw.map_dark_style
-//                )
-//            )
-//
-//            if (!success) {
-//               Timber.e("Style parsing failed.")
-//
-//            }
-//        } catch (e: Resources.NotFoundException) {
-//            Timber.e(e, "Can't find style. Error: ")
-//        }
-//    }
 
     private fun sendCommandToService(action: String) =
         Intent(requireContext(), TrackingService::class.java).also {
@@ -299,8 +273,10 @@ class TrackingFragment : Fragment() {
     private fun zoomToSeeWholeTrack() {
         val bounds = LatLngBounds.Builder()
         for(polyline in pathPoints) {
-            for(pos in polyline) {
-                bounds.include(pos)
+            if(polyline.isNotEmpty()) {
+                for (pos in polyline) {
+                    bounds.include(pos)
+                }
             }
         }
 
@@ -309,39 +285,19 @@ class TrackingFragment : Fragment() {
                 bounds.build(),
                 mapView.width,
                 mapView.height,
-                (mapView.height * 0.05f).toInt()/**padding**/
+                (mapView.height * 0.05f).toInt()
+                /**padding**/
             )
         )
     }
 
-
-    private fun saveImageOnInternalStorage(bmp : Bitmap): String{
-        var outputStream:FileOutputStream? = null
-        val filePath = Environment.getExternalStorageDirectory().toString()
-        val dir = File("$filePath/BurnIt/")
-        dir.mkdirs()
-        val child = System.currentTimeMillis().toString() + ".jpg"
-        val file = File(dir, child)
-        try {
-            outputStream = FileOutputStream(file)
-        }catch (e: FileNotFoundException){
-            e.printStackTrace()
-        }
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-
-        try {
-            outputStream?.flush()
-        }catch (e: IOException){
-            e.printStackTrace()
-        }
-        try {
-            outputStream?.close()
-        }catch (e: IOException){
-            e.printStackTrace()
-        }
-        Timber.d( "saveImageOnInternalStorage: $file")
-        return file.absolutePath
+    fun saveImageOnInternalStorage(bitmap: Bitmap): String {
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
+        val b: ByteArray = baos.toByteArray()
+        return Base64.encodeToString(b, Base64.DEFAULT)
     }
+
     private fun endRunAndSaveToDb() {
         map?.snapshot { bmp ->
 
@@ -352,7 +308,14 @@ class TrackingFragment : Fragment() {
             val dateTimestamp = Calendar.getInstance().timeInMillis
             val caloriesBurned = ((distanceInMeters / 1000f) * weight).toInt()
             val imagePath = saveImageOnInternalStorage(bmp)
-            val run = Run(imagePath, dateTimestamp, avgSpeed, distanceInMeters, curTimeInMillis, caloriesBurned)
+            val run = Run(
+                imagePath,
+                dateTimestamp,
+                avgSpeed,
+                distanceInMeters,
+                curTimeInMillis,
+                caloriesBurned
+            )
             viewModel.insertRun(run)
             Snackbar.make(
                 requireActivity().findViewById(R.id.rootView),
@@ -394,30 +357,29 @@ class TrackingFragment : Fragment() {
     }
 
     private fun getTargetResult(): Int{
-
       return  when(position){
-            0, 1 ->  round((curTimeInMillis.toDouble()/target.toDouble()) * 100).toInt()
-            2 -> {
-                val inKm = distanceInMeters / 1000f
-                round((inKm.toDouble()/target.toDouble()) * 100).toInt()
-            }
-          else -> round((curTimeInMillis.toDouble()/target.toDouble()) * 100).toInt()
+          0f, 1f -> round((curTimeInMillis.toDouble() / target.toDouble()) * 100).toInt()
+          2f -> {
+              val inKm = distanceInMeters / 1000f
+              round((inKm.toDouble() / target.toDouble()) * 100).toInt()
+          }
+          else -> round((curTimeInMillis.toDouble() / target.toDouble()) * 100).toInt()
       }
     }
-
-
 
     private fun stopRun() {
         ui.tvTimer.setText(R.string.timer)
         sendCommandToService(ACTION_STOP_SERVICE)
-        if(target == 0L){
+        if(target == 0f){
             findNavController().navigate(R.id.runFragment)
         }
         else{
             val percentage = getTargetResult()
-            val action = TrackingFragmentDirections.actionTrackingFragmentToRunFragment(percentage)
-            Timber.d("$percentage, $curTimeInMillis, $target")
-            findNavController().navigate(action)
+           sharedPref.edit()
+               .putFloat(PERCENTAGE, percentage.toFloat())
+               .apply()
+            Timber.d("$percentage, $curTimeInMillis, $target, $position")
+            findNavController().navigate(R.id.runFragment)
         }
 
     }

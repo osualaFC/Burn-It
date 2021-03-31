@@ -9,8 +9,11 @@ import com.example.burn_it.utils.Constants.BASE_URL
 import com.example.burn_it.utils.Constants.KEY_FIRST_TIME_TOGGLE
 import com.example.burn_it.utils.Constants.KEY_NAME
 import com.example.burn_it.utils.Constants.KEY_WEIGHT
+import com.example.burn_it.utils.Constants.PERCENTAGE
+import com.example.burn_it.utils.Constants.POSITION
 import com.example.burn_it.utils.Constants.RUNNING_DATABASE_NAME
 import com.example.burn_it.utils.Constants.SHARED_PREFERENCES_NAME
+import com.example.burn_it.utils.Constants.TARGET
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,6 +24,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 
@@ -59,6 +63,21 @@ object AppModule {
     fun provideFirstTimeToggle(sharedPref: SharedPreferences) =
         sharedPref.getBoolean(KEY_FIRST_TIME_TOGGLE, true)
 
+    @Singleton
+    @Provides
+    @Named("target")
+    fun provideTarget(sharedPref: SharedPreferences) = sharedPref.getFloat(TARGET, 1f)
+
+    @Singleton
+    @Provides
+    @Named("position")
+    fun providePosition(sharedPref: SharedPreferences) = sharedPref.getFloat(POSITION, 0F)
+
+    @Singleton
+    @Provides
+    @Named("percentage")
+    fun providePercentage(sharedPref: SharedPreferences) = sharedPref.getFloat(PERCENTAGE, 0F)
+
     @Provides
     @Singleton
     fun provideLogger(): HttpLoggingInterceptor {
@@ -71,7 +90,6 @@ object AppModule {
     fun providesConverterFactory(): Converter.Factory {
         return GsonConverterFactory.create()
     }
-
 
 
     @Provides
