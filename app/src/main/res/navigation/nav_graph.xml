@@ -35,18 +35,21 @@
         android:id="@+id/setupFragment"
         android:name="com.example.burn_it.ui.SetupFragment"
         android:label="fragment_setup"
-        tools:layout="@layout/fragment_setup" >
-        <action
-            android:id="@+id/action_setupFragment_to_runFragment"
-            app:destination="@id/runFragment"
-            app:enterAnim="@anim/slide_left"
-            app:exitAnim="@anim/wait_anim"
-            app:popEnterAnim="@anim/wait_anim"
-            app:popExitAnim="@anim/slide_right"/>
-    </fragment>
+        tools:layout="@layout/fragment_setup" />
+
     <fragment
         android:id="@+id/targetFragment"
         android:name="com.example.burn_it.ui.TargetFragment"
         android:label="fragment_target"
         tools:layout="@layout/fragment_target" />
+    <fragment
+        android:id="@+id/bmiFragment"
+        android:name="com.example.burn_it.ui.bmi.BMICalculatorFragment"
+        android:label="fragment_b_m_i"
+        tools:layout="@layout/fragment_b_m_i" />
+    <fragment
+        android:id="@+id/BMIFragment"
+        android:name="com.example.burn_it.ui.bmi.BMIFragment"
+        android:label="fragment_b_m_i2"
+        tools:layout="@layout/fragment_b_m_i2" />
 </navigation>

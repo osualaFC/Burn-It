@@ -15,6 +15,7 @@
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCNsLXLUsw06--_eOiSAoicmmipnEb8vLE</string>
     <string name="settings">Settings</string>
     <string name="statistics">Statistics</string>
+    <string name="bmi">BMI</string>
     <string name="your_runs">Your Runs</string>
     <string name="sort_by">Sort by:</string>
     <string name="todo">TODO</string>
@@ -57,5 +58,35 @@
     <string name="settings_text">Click here to modify your profile</string>
     <string name="next">Next</string>
     <string name="done">Done</string>
+    <string name="total_distance">Total Distance</string>
+    <string name="calories_burned">Calories Burned</string>
+    <string name="total_time">Total Time</string>
+    <string name="_0kcal">0kcal</string>
+    <string name="average_speed">Average Speed</string>
+    <string name="_0km_h">0km/h</string>
+    <string name="_0km">0km</string>
+    <string name="_00_00_00">00:00:00</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="bmi_calculator">BMI Calculator</string>
+    <string name="what_are_you">What are you?</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="what_is_your_age">What is your age?</string>
+    <string name="imperial">Imperial</string>
+    <string name="metric">Metric</string>
+    <string name="what_is_your_body_metrics">What is your body metrics?</string>
+    <string name="height">Height:</string>
+    <string name="ft">ft</string>
+    <string name="ins">ins</string>
+    <string name="st">st</string>
+    <string name="ibs">Ibs</string>
+    <string name="weight">Weight:</string>
+    <string name="calculate_your_bmi">Calculate Your BMI</string>
+    <string name="m">m</string>
+    <string name="your_bmi">Your BMI</string>
+    <string name="want_to_be_better">Want to be better?</string>
+    <string name="what_is_bmi">What is BMI?</string>
+    <string name="find_out_your_bmi">Find out your BMI</string>
 
 </resources>

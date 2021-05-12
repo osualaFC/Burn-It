@@ -46,7 +46,7 @@ class SetupFragment : Fragment() {
                 .setPopUpTo(R.id.setupFragment, true)
                 .build()
             findNavController().navigate(
-                R.id.action_setupFragment_to_runFragment,
+                R.id.runFragment,
                 savedInstanceState,
                 navOptions
             )
@@ -55,7 +55,7 @@ class SetupFragment : Fragment() {
         ui.tvContinue.setOnClickListener {
             val success = writePersonalDataToSharedPref()
             if(success) {
-                findNavController().navigate(R.id.action_setupFragment_to_runFragment)
+                findNavController().navigate(R.id.runFragment)
             } else {
                 Snackbar.make(requireView(), "Please enter all the fields", Snackbar.LENGTH_SHORT).show()
             }
