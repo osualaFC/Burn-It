@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.burn_it.R
 import com.example.burn_it.databinding.FragmentBMI2Binding
 import com.example.burn_it.databinding.FragmentBMIBinding
@@ -21,6 +22,13 @@ class BMIFragment : Fragment() {
     ): View? {
         _binding = FragmentBMI2Binding.inflate(inflater, container, false)
         return ui.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        ui.checkBmi.setOnClickListener {
+            findNavController().navigate(R.id.bmiFragment)
+        }
     }
 
     override fun onDestroyView() {

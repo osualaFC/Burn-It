@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
        controller.addOnDestinationChangedListener { _, destination, _ ->
                 when(destination.id) {
-                    R.id.settingsFragment, R.id.runFragment, R.id.statisticsFragment, R.id.bmiFragment ->
+                    R.id.settingsFragment, R.id.runFragment, R.id.statisticsFragment, R.id.BMIFragment ->
                         bottomNav.visibility = View.VISIBLE
                     else -> bottomNav.visibility = View.GONE
                 }

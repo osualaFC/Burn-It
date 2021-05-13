@@ -17,20 +17,21 @@
             android:layout_marginStart="16dp"
             android:orientation="horizontal">
             <RadioButton
-                android:id="@+id/imperial"
+                android:id="@+id/imperial_radio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/imperial"
                 android:textSize="16sp"
-                android:checked="true"
                 android:buttonTint="@color/colorPrimary"
                 android:fontFamily="@font/baloo"/>
             <RadioButton
+                android:id="@+id/metric_radio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="@string/metric"
                 android:textSize="16sp"
+                android:checked="true"
                 android:buttonTint="@color/colorPrimary"
                 android:fontFamily="@font/baloo"/>
         </RadioGroup>
@@ -38,6 +39,7 @@
             android:id="@+id/imperial_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -160,7 +162,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:visibility="gone"
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
@@ -208,7 +209,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/height"
+                android:text="@string/weight"
                 android:textSize="20sp"
                 android:layout_gravity="center_vertical"
                 android:textColor="@color/colorWhite"

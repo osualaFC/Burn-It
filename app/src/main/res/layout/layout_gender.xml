@@ -25,15 +25,18 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/male_card"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_gravity="center"
                     app:cardCornerRadius="50dp">
                     <ImageView
+                        android:id="@+id/male_img"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_male"/>
+                        android:src="@drawable/ic_male"
+                         />
                 </androidx.cardview.widget.CardView>
                 <TextView
                     android:layout_width="wrap_content"
@@ -49,11 +52,13 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/female_card"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_gravity="center"
                     app:cardCornerRadius="50dp">
                     <ImageView
+                        android:id="@+id/female_img"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
